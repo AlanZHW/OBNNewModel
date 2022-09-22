@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>QSS/dialog.qss</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>OBNLowerComputerControl</class>
+ <widget class="QMainWindow" name="OBNLowerComputerControl">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>719</width>
+    <height>676</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>Ubuntu</family>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>OBNLowerComputerControl</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="OBNListNodeInform" name="widgetNodeList" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+      </widget>
+      <widget class="OBNRealControlWidget" name="widgetControl" native="true"/>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>719</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>文件</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionWelcome">
+   <property name="text">
+    <string>欢迎界面</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>OBNRealControlWidget</class>
+   <extends>QWidget</extends>
+   <header>obnrealcontrolwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>OBNListNodeInform</class>
+   <extends>QWidget</extends>
+   <header>obnlistnodeinform.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

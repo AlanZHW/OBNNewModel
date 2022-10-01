@@ -11,7 +11,7 @@ OBNWelcomeModel::OBNWelcomeModel(QWidget *parent) :
     connect(ui->buttonEnterTheSystem, &QPushButton::clicked, this, &OBNWelcomeModel::slotEnterTheSystem);
 
     QString nQSSInform;
-    QFile qssFile(":QSS/dialog.qss");
+    QFile qssFile(":QSS/defaultStyle.qss");
     if(qssFile.open(QIODevice::ReadOnly))
     {
         nQSSInform = qssFile.readAll();

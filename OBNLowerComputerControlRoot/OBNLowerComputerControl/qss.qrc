@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>QSS/dialog.qss</file>
+        <file>QSS/defaultStyle.qss</file>
     </qresource>
 </RCC>

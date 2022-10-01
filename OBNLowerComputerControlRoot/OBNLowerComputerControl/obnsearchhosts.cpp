@@ -12,7 +12,9 @@ extern bool isNodeIP(const uint &ipV4)
 extern uint ip2DeviceNo(const uint &ipV4)
 {
     uint temp = ipV4 - startIp;
-    return (temp/256)*100 + ((temp%256)-100);
+//    uint nCurentNO = (temp/256)*100 + ((temp%256)-100);   ///< 从100开始
+    uint nCurentNO = (temp/256)*2 + ((temp%256)-2);         ///< 从2开始
+    return nCurentNO;
 }
 
 
@@ -112,14 +114,10 @@ void OBNSearchHosts::slotSearchButtonClicked()
         ui->pushButtonOK->setEnabled(true);
     }
 
-
-    for(int iNo = 0; iNo < n_rstInform.count(); iNo ++)
-    {
-        OBNSearchHostsThread* n_searchHostsThread = new OBNSearchHostsThread;
-        n_searchHostsThread->setValue(n_rstInform[iNo]);
-        connect(n_searchHostsThread, &OBNSearchHostsThread::signalSearchHostsLinkStatus, this, &OBNSearchHosts::slotRecvSearchHostsInform);
-        n_searchHostsThread->start();
-    }
+    OBNSearchHostsThread* n_searchHostsThread = new OBNSearchHostsThread;
+    n_searchHostsThread->setValues(n_rstInform);
+    connect(n_searchHostsThread, &OBNSearchHostsThread::signalSearchHostsLinkStatus, this, &OBNSearchHosts::slotRecvSearchHostsInform);
+    n_searchHostsThread->start();
 }
 
 /// ====== 接收当前可用的IP
@@ -176,13 +174,15 @@ void OBNSearchHosts::slotResetButtonClicked()
 /// ======
 void OBNSearchHosts::slotOKButtonClicked()
 {
+    m_hostsStateLVector.clear();
     for(int iRow = 0; iRow < ui->tableWidget->rowCount(); iRow ++)
     {
         HostsState pHostsState;
         pHostsState.ip      = ui->tableWidget->item(iRow, 0)->text();
         pHostsState.hostNum = ui->tableWidget->item(iRow, 1)->text();
         pHostsState.state   = ui->tableWidget->item(iRow, 2)->text() == "断开" ? false : true;
-        m_hostsStateLVector.append(pHostsState);
+        if(pHostsState.state)
+            m_hostsStateLVector.append(pHostsState);
     }
     emit signalCurrentHostsSend(m_hostsStateLVector);
     /// ======

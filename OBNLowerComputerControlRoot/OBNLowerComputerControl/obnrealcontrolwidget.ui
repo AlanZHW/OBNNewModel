@@ -42,7 +42,7 @@
        <string>      标定      </string>
       </attribute>
      </widget>
-     <widget class="QWidget" name="tabOTA">
+     <widget class="OBNLowerComputerOTA" name="tabOTA">
       <attribute name="title">
        <string>       OTA      </string>
       </attribute>
@@ -52,10 +52,29 @@
        <string>实时波形显示</string>
       </attribute>
      </widget>
+     <widget class="OBNLogVisualization" name="tabLogVisualization">
+      <attribute name="title">
+       <string>Log显示</string>
+      </attribute>
+     </widget>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>OBNLowerComputerOTA</class>
+   <extends>QWidget</extends>
+   <header>obnlowercomputerota.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>OBNLogVisualization</class>
+   <extends>QWidget</extends>
+   <header>obnlogvisualization.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

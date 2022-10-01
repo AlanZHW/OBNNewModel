@@ -26,7 +26,6 @@ void OBNSearchHostsThread::run()
     {
         float fPorcessNum = iNO+1;
         int   iPorcessNum = fPorcessNum/nTotalNum*100;
-
         addr.setAddress(m_values[iNO]);
         nPingIPStr   = addr.toString();
         nPingCMD     = "ping " + nPingIPStr + PINGPARAMETER;

@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QTabWidget>
 
+#include "LowerComputerControlPublic.h"
+
 namespace Ui {
 class OBNRealControlWidget;
 }
@@ -16,6 +18,8 @@ class OBNRealControlWidget : public QWidget
 public:
     explicit OBNRealControlWidget(QWidget *parent = nullptr);
     ~OBNRealControlWidget();
+
+    void setCurrentOptionalInform(const QVector<HostsState>&);
 
 private:
     Ui::OBNRealControlWidget *ui;

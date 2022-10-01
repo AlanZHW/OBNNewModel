@@ -13,7 +13,11 @@ SOURCES += \
     ippartlineedit.cpp \
     main.cpp \
     obnlistnodeinform.cpp \
+    obnlogvisualization.cpp \
+    obnlogvisualizationdraw.cpp \
+    obnlogvisualizationdsp.cpp \
     obnlowercomputercontrol.cpp \
+    obnlowercomputerota.cpp \
     obnrealcontrolwidget.cpp \
     obnsearchhosts.cpp \
     obnsearchhoststhread.cpp \
@@ -24,7 +28,11 @@ HEADERS += \
     iplineedit.h \
     ippartlineedit.h \
     obnlistnodeinform.h \
+    obnlogvisualization.h \
+    obnlogvisualizationdraw.h \
+    obnlogvisualizationdsp.h \
     obnlowercomputercontrol.h \
+    obnlowercomputerota.h \
     obnrealcontrolwidget.h \
     obnsearchhosts.h \
     obnsearchhoststhread.h \
@@ -32,7 +40,11 @@ HEADERS += \
 
 FORMS += \
     obnlistnodeinform.ui \
+    obnlogvisualization.ui \
+    obnlogvisualizationdraw.ui \
+    obnlogvisualizationdsp.ui \
     obnlowercomputercontrol.ui \
+    obnlowercomputerota.ui \
     obnrealcontrolwidget.ui \
     obnsearchhosts.ui \
     obnwelcomemodel.ui
@@ -45,4 +57,20 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     Image.qrc \
     qss.qrc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

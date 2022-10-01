@@ -2,6 +2,8 @@
 #define OBNLISTNODEINFORM_H
 
 #include <QLabel>
+#include <QDebug>
+#include <QObject>
 #include <QWidget>
 #include <QCheckBox>
 
@@ -19,9 +21,18 @@ public:
     explicit OBNListNodeInform(QWidget *parent = nullptr);
     ~OBNListNodeInform();
 
-    void setHostInforms(QVector<HostsState> pHostInforms);
+    void setHostInforms(const QVector<HostsState>& pHostInforms);
+    void selectAllFunction(bool);
+
+signals:
+    void signalOptionalHosts(const QVector<HostsState>&);
+
+public slots:
+    void slotCheckBoxStateChange(const int&);
 
 private:
+    QVector<HostsState> mInformHosts;
+
     Ui::OBNListNodeInform *ui;
 };
 

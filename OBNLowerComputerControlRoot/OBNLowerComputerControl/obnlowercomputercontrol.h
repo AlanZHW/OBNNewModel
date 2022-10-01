@@ -7,7 +7,9 @@
 #include <QDebug>
 #include <QToolBar>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QMainWindow>
+#include <QSpacerItem>
 
 #include "obnsearchhosts.h"
 #include "obnsearchhoststhread.h"
@@ -35,12 +37,11 @@ public slots:
     /// ===== 全选
     void slotSelectall(int);
 
-    /// ===== 下载
-    void slotdownload();
-    /// ===== 上传
-    void slotupload();
-    /// ===== 升级
-    void slotupgrade();
+    void slotOptionalHosts(const QVector<HostsState>&);
+
+    /// ====== 语言设置和帮助文档
+    void slotSetupLanguage(const int&);
+    void slotOpenHelpDocumentation();
 
 private:
     QToolBar* m_toolBar;
@@ -48,7 +49,7 @@ private:
     bool m_currentSelAll = false;
 
     OBNSearchHosts* m_obnSeatchHosts;
-
+    QCheckBox*      n_selAllCheckBox;
     Ui::OBNLowerComputerControl *ui;
 };
 #endif // OBNLOWERCOMPUTERCONTROL_H

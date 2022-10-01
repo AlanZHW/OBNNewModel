@@ -13,7 +13,6 @@
 //起始地址
 static const uint startIp = QHostAddress("192.168.137.0").toIPv4Address();
 
-
 namespace Ui {
 class OBNSearchHosts;
 }
@@ -21,7 +20,6 @@ class OBNSearchHosts;
 class OBNSearchHosts : public QDialog
 {
     Q_OBJECT
-
 public:
     explicit OBNSearchHosts(QWidget *parent = nullptr);
     ~OBNSearchHosts();

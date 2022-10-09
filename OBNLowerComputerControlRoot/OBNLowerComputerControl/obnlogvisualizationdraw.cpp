@@ -28,11 +28,11 @@ void OBNLogVisualizationDraw::paintEvent(QPaintEvent *event)
     float n_maxData =-999999.9;
 
     /// ====== 获取当前需要显示的数据最大值和最小值
-    isDrawBAT_V = true;
-    isDrawT     = true;
-    isDrawP     = true;
-    isDrawTheta = true;
-    isDrawGamma = true;
+//    isDrawBAT_V = true;
+//    isDrawT     = true;
+//    isDrawP     = true;
+//    isDrawTheta = true;
+//    isDrawGamma = true;
     isDrawAz    = true;
     if(isDrawBAT_V)
     {

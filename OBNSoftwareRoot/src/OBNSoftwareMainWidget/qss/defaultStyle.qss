@@ -1,0 +1,66 @@
+
+/***
+QTabBar
+***/
+QTabBar::tab{
+        height:40;
+}
+QTabBar::tab{
+        background-color:#2C1F82;
+        color:#ffffff;
+}
+QTabBar::tab::selected{
+        background-color:#fbfbfb;
+        color:#000000;
+}
+
+QTabBar::tab#tabWidgetMain{
+        height:33;
+}
+QTabBar::tab::selected#tabWidgetMain{
+        background-color:#FFFFFF;
+}
+QTabBar::tab::!selected#tabWidgetMain{
+        background-color:#D9D9D9;
+}
+
+
+/***
+QTabWidget
+***/
+QTabWidget::pane
+{
+        border: -1px;
+        left: 1px;
+}
+
+/***
+QWidget
+***/
+QWidget#widgetMenu{
+    background-color:#2C1F82;
+}
+QWidget#widgetBaseImage{
+    background-color:#BEBEBE
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

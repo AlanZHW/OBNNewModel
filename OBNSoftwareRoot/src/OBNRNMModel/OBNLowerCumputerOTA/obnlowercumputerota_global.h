@@ -1,0 +1,12 @@
+#ifndef OBNLOWERCUMPUTEROTA_GLOBAL_H
+#define OBNLOWERCUMPUTEROTA_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#ifdef OBNOTA_LIBRARY
+    #define OBNOTA_EXPORT Q_DECL_EXPORT
+#else
+    #define OBNOTA_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // OBNLOWERCUMPUTEROTA_GLOBAL_H

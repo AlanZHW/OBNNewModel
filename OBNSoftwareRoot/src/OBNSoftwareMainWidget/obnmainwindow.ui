@@ -1,0 +1,969 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>OBNMainWindow</class>
+ <widget class="QMainWindow" name="OBNMainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1053</width>
+    <height>635</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>远程节点管理器</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout_10">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>10</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QWidget" name="widgetMenu" native="true">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>156</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QTabWidget" name="tabWidget">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>156</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>0</width>
+           <height>116</height>
+          </size>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::TabFocus</enum>
+         </property>
+         <property name="contextMenuPolicy">
+          <enum>Qt::DefaultContextMenu</enum>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">/***
+QTabBar::tab{
+	height:40;
+}
+QTabBar::tab{
+	background-color:#2C1F82;
+	color:#ffffff;
+}
+QTabBar::tab::selected{
+	background-color:#fbfbfb;
+	color:#000000;
+}
+QTabWidget::pane
+{
+	border: -1px;
+	left: 1px;
+}
+***/</string>
+         </property>
+         <property name="tabPosition">
+          <enum>QTabWidget::North</enum>
+         </property>
+         <property name="tabShape">
+          <enum>QTabWidget::Rounded</enum>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="elideMode">
+          <enum>Qt::ElideMiddle</enum>
+         </property>
+         <property name="documentMode">
+          <bool>false</bool>
+         </property>
+         <property name="tabsClosable">
+          <bool>false</bool>
+         </property>
+         <widget class="QWidget" name="tabRNM">
+          <attribute name="title">
+           <string>节点管理</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_5">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QWidget" name="widgetDataManager" native="true">
+             <property name="styleSheet">
+              <string notr="true">background:qlineargradient(spread:pad,x1:0,y2:1,x1:0,y2:1,stop:0 #fbfbfb,stop:1 #e8e8e8);
+
+QToolButton{
+	border:none;
+}</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_2">
+              <property name="leftMargin">
+               <number>32</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <property name="horizontalSpacing">
+               <number>42</number>
+              </property>
+              <item row="0" column="5">
+               <spacer name="horizontalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>564</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="2">
+               <widget class="QToolButton" name="toolButtonRealTimWaveform">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="4">
+               <widget class="QToolButton" name="toolButtonPositionSystem">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QToolButton" name="toolButtonOTA">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QToolButton" name="toolButtonRNM">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tabLMGR">
+          <attribute name="title">
+           <string> 观测系统</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_9">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QWidget" name="widget_2" native="true">
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background:qlineargradient(spread:pad,x1:0,y2:1,x1:0,y2:1,stop:0 #fbfbfb,stop:1 #e8e8e8);</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_8">
+              <property name="leftMargin">
+               <number>32</number>
+              </property>
+              <property name="horizontalSpacing">
+               <number>42</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QToolButton" name="toolButtonNewArea">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="4">
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="3">
+               <widget class="QToolButton" name="toolButtonDeleteArea">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QToolButton" name="toolButtonOpenArea">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QToolButton" name="toolButtonUpdateArea">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tabDMC">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <attribute name="title">
+           <string>数据管理</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_6">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QWidget" name="widget_3" native="true">
+             <property name="styleSheet">
+              <string notr="true">background:qlineargradient(spread:pad,x1:0,y2:1,x1:0,y2:1,stop:0 #fbfbfb,stop:1 #e8e8e8);
+
+</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_3">
+              <property name="leftMargin">
+               <number>32</number>
+              </property>
+              <property name="horizontalSpacing">
+               <number>42</number>
+              </property>
+              <item row="0" column="2">
+               <widget class="QToolButton" name="toolButtonHTimeAnilysis">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="5">
+               <spacer name="horizontalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>827</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="1">
+               <widget class="QToolButton" name="toolButtonExportSEGY">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QToolButton" name="toolButtonLogDisplay">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QToolButton" name="toolButtonOpenSEGY">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="4">
+               <widget class="QToolButton" name="toolButtonCalibration">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tabQC">
+          <attribute name="title">
+           <string>质量控制</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_7">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QWidget" name="widget_4" native="true">
+             <property name="styleSheet">
+              <string notr="true">background:qlineargradient(spread:pad,x1:0,y2:1,x1:0,y2:1,stop:0 #fbfbfb,stop:1 #e8e8e8);
+
+</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_4">
+              <property name="leftMargin">
+               <number>32</number>
+              </property>
+              <property name="horizontalSpacing">
+               <number>42</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QToolButton" name="toolButtonJobAnalysis">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>827</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tabHELP">
+          <attribute name="title">
+           <string>帮助文档</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_12">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QWidget" name="widget" native="true">
+             <property name="styleSheet">
+              <string notr="true">background:qlineargradient(spread:pad,x1:0,y2:1,x1:0,y2:1,stop:0 #fbfbfb,stop:1 #e8e8e8);</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_11">
+              <property name="leftMargin">
+               <number>32</number>
+              </property>
+              <property name="horizontalSpacing">
+               <number>42</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QToolButton" name="toolButtonHelp">
+                <property name="minimumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <spacer name="horizontalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>893</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QSplitter" name="splitter_2">
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="handleWidth">
+       <number>10</number>
+      </property>
+      <widget class="QTreeView" name="treeView_DataList">
+       <property name="maximumSize">
+        <size>
+         <width>343</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QTreeView::item{
+	height:35px;
+}
+background-color:#FFFFFF</string>
+       </property>
+       <property name="lineWidth">
+        <number>5</number>
+       </property>
+      </widget>
+      <widget class="QSplitter" name="splitter">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="handleWidth">
+        <number>10</number>
+       </property>
+       <widget class="QWidget" name="widgetBaseImage" native="true">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_13">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="MyTabWidget" name="tabWidgetMain">
+           <property name="styleSheet">
+            <string notr="true">/**
+QTabBar::tab{
+	height:33;
+}
+QTabBar::tab::selected{
+	background-color:#FFFFFF;
+}
+QTabBar::tab::!selected{
+	background-color:#D9D9D9;
+}**/</string>
+           </property>
+           <property name="tabsClosable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QTableWidget" name="tableWidget">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>100</height>
+         </size>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="action_newproject">
+   <property name="text">
+    <string>新建项目   </string>
+   </property>
+  </action>
+  <action name="action_openproject">
+   <property name="text">
+    <string>打开项目   </string>
+   </property>
+  </action>
+  <action name="action_close">
+   <property name="text">
+    <string>退出</string>
+   </property>
+  </action>
+  <action name="action_basemap">
+   <property name="text">
+    <string>底图</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+    </font>
+   </property>
+  </action>
+  <action name="action_dataloat">
+   <property name="text">
+    <string>地震数据</string>
+   </property>
+  </action>
+  <action name="action_logDataLoad">
+   <property name="text">
+    <string>测井数据</string>
+   </property>
+  </action>
+  <action name="action_textLoad">
+   <property name="text">
+    <string>文本导入</string>
+   </property>
+  </action>
+  <action name="action_VaSpStMap">
+   <property name="text">
+    <string>变速构造成图</string>
+   </property>
+  </action>
+  <action name="action_FIWD">
+   <property name="text">
+    <string>随钻快速成像</string>
+   </property>
+  </action>
+  <action name="action_VFO">
+   <property name="text">
+    <string>速度场优化</string>
+   </property>
+  </action>
+  <action name="action_FAE">
+   <property name="text">
+    <string>断裂属性提取</string>
+   </property>
+  </action>
+  <action name="action_RSP">
+   <property name="text">
+    <string>压力系统参数</string>
+   </property>
+  </action>
+  <action name="action_RMP">
+   <property name="text">
+    <string>岩石力学参数</string>
+   </property>
+  </action>
+  <action name="action_ISSP">
+   <property name="text">
+    <string>地应力参数</string>
+   </property>
+  </action>
+  <action name="action_QRA">
+   <property name="text">
+    <string>风险量化评估</string>
+   </property>
+  </action>
+  <action name="action_help">
+   <property name="text">
+    <string>帮助</string>
+   </property>
+  </action>
+  <action name="actionDefault">
+   <property name="text">
+    <string>默认风格</string>
+   </property>
+  </action>
+  <action name="actionCoffee">
+   <property name="text">
+    <string>Coffee</string>
+   </property>
+  </action>
+  <action name="actionMetro">
+   <property name="text">
+    <string>MetroUI</string>
+   </property>
+  </action>
+  <action name="action_help_2">
+   <property name="text">
+    <string>帮助</string>
+   </property>
+  </action>
+  <action name="actionDefault_2">
+   <property name="text">
+    <string>默认风格</string>
+   </property>
+  </action>
+  <action name="actionCoffee_2">
+   <property name="text">
+    <string>Coffee</string>
+   </property>
+  </action>
+  <action name="actionMetroUI">
+   <property name="text">
+    <string>MetroUI</string>
+   </property>
+  </action>
+  <action name="action_display">
+   <property name="text">
+    <string>地震显示</string>
+   </property>
+  </action>
+  <action name="action_Horizon">
+   <property name="text">
+    <string>层位数据</string>
+   </property>
+  </action>
+  <action name="actionWellTrajectory">
+   <property name="text">
+    <string>井轨迹数据</string>
+   </property>
+  </action>
+  <action name="actionLoggingLoad">
+   <property name="text">
+    <string>测井数据</string>
+   </property>
+  </action>
+  <action name="actionMudLogging">
+   <property name="text">
+    <string>录井数据</string>
+   </property>
+  </action>
+  <action name="actionVelocity">
+   <property name="text">
+    <string>原始速度场</string>
+   </property>
+  </action>
+  <action name="actionDispLogging">
+   <property name="text">
+    <string>测井显示</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>导入速度数据</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MyTabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>mytabwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

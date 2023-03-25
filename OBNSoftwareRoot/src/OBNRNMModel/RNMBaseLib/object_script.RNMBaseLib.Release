@@ -1,0 +1,17 @@
+INPUT(
+./release\searchthread.o
+./release\rnitems.o
+./release\nodequery.o
+./release\rnmpublic.o
+./release\rnftpmanager.o
+./release\statusreport.o
+./release\ftpmanager.o
+./release\nodeftp.o
+./release\moc_searchthread.o
+./release\moc_nodequery.o
+./release\moc_rnmpublic.o
+./release\moc_rnftpmanager.o
+./release\moc_statusreport.o
+./release\moc_ftpmanager.o
+./release\moc_nodeftp.o
+);

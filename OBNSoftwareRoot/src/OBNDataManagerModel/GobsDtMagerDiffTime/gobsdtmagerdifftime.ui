@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GobsDtMagerDiffTime</class>
+ <widget class="QDialog" name="GobsDtMagerDiffTime">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>718</width>
+    <height>450</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>GobsDtMagerDiffTime</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <widget class="QLabel" name="labelOriginPath">
+       <property name="text">
+        <string>Origin Data Path</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="lineEditOriginPath"/>
+     </item>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="PushBrowse">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Parameter  </string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Config file</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="4">
+       <widget class="QLineEdit" name="EditConfig"/>
+      </item>
+      <item row="0" column="5">
+       <widget class="QPushButton" name="buttonConfig">
+        <property name="text">
+         <string>Browse</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelN1">
+        <property name="text">
+         <string>OneSampleCount</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEditN1"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="labelFs">
+        <property name="text">
+         <string>FS(sps)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="lineEditFs"/>
+      </item>
+      <item row="1" column="4">
+       <widget class="QLabel" name="labelB">
+        <property name="text">
+         <string>Bandwidth(Hz)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="5">
+       <widget class="QLineEdit" name="lineEditB"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelF0">
+        <property name="text">
+         <string>CenterFrequency(Hz)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="lineEditF0"/>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Distance(m)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QLineEdit" name="lineEditDistance"/>
+      </item>
+      <item row="2" column="4">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Area</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="5">
+       <widget class="QComboBox" name="comboBox"/>
+      </item>
+      <item row="3" column="5">
+       <widget class="QPushButton" name="PushImplement">
+        <property name="text">
+         <string>Implement</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QTableWidget" name="tableWidget"/>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,17 @@
+INPUT(
+./debug\searchthread.o
+./debug\rnitems.o
+./debug\nodequery.o
+./debug\rnmpublic.o
+./debug\rnftpmanager.o
+./debug\statusreport.o
+./debug\ftpmanager.o
+./debug\nodeftp.o
+./debug\moc_searchthread.o
+./debug\moc_nodequery.o
+./debug\moc_rnmpublic.o
+./debug\moc_rnftpmanager.o
+./debug\moc_statusreport.o
+./debug\moc_ftpmanager.o
+./debug\moc_nodeftp.o
+);

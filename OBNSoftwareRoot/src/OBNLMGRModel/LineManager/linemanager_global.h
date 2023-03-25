@@ -1,0 +1,12 @@
+#ifndef LINEMANAGER_GLOBAL_H
+#define LINEMANAGER_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(OBNAREAHANDLE_LIBRARY)
+#define OBNAREAHANDLE_EXPORT Q_DECL_EXPORT
+#else
+#define OBNAREAHANDLE_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // LINEMANAGER_GLOBAL_H

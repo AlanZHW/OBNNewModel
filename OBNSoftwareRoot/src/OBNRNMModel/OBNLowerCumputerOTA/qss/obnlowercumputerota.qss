@@ -1,0 +1,10 @@
+
+/*** QTableWidget ***/
+QTableWidget#tableWidgetOTA{
+    background-color:#FFFFFF;
+}
+
+/*** QGroupBox ***/
+QGroupBox#groupBoxOTA{
+    background-color:#FFFFFF;
+}

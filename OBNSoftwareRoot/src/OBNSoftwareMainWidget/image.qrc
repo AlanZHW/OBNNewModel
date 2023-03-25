@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>image/Calibration.png</file>
+        <file>image/DataDisplay.png</file>
+        <file>image/DeleteArea.png</file>
+        <file>image/ExportSEGY.png</file>
+        <file>image/HTimeAnilysis.png</file>
+        <file>image/JobAnalysis.png</file>
+        <file>image/LogDisplay.png</file>
+        <file>image/NewArea.png</file>
+        <file>image/OpenArea.png</file>
+        <file>image/OTA.png</file>
+        <file>image/PositionSystem.png</file>
+        <file>image/RealTimeWareform.png</file>
+        <file>image/UpdateArea.png</file>
+        <file>image/Help.png</file>
+    </qresource>
+</RCC>

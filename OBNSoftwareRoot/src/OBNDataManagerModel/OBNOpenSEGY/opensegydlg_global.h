@@ -1,0 +1,12 @@
+#ifndef OPENSEGYDLG_GLOBAL_H
+#define OPENSEGYDLG_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(OPENSEGYDLG_LIBRARY)
+#define OPENSEGYDLG_EXPORT Q_DECL_EXPORT
+#else
+#define OPENSEGYDLG_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // OPENSEGYDLG_GLOBAL_H

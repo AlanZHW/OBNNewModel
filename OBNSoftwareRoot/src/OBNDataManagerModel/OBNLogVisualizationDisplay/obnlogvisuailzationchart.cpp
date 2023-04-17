@@ -30,6 +30,7 @@ OBNLogVisuailzationChart::~OBNLogVisuailzationChart()
         series->clear();
         delete [] series;
     }
+    m_currentDisplayPoints.clear();
 }
 
 
@@ -41,10 +42,7 @@ void OBNLogVisuailzationChart::setChartName(const QString& pChartName)
     }
 }
 
-void OBNLogVisuailzationChart::setAxis(int curveNum,
-                                       QString _xname, qreal _xmin, qreal _xmax, int _xtickc,
-                                       QString _yname, qreal _ymin, qreal _ymax, int _ytickc,
-                                       QList<QColor> _colorList)
+void OBNLogVisuailzationChart::setAxis(int curveNum,QString _xname, qreal _xmin, qreal _xmax, int _xtickc, QString _yname, qreal _ymin, qreal _ymax, int _ytickc, QList<QColor> _colorList)
 {
     axisX->setRange(_xmin, _xmax);    //设置范围
     axisX->setLabelFormat("%u");      //设置刻度的格式(%u:无符号十进制整数,%s:字符串,%c:一个字符,%d:有符号十进制整数,%e:浮点数、e-记数法,%f:浮点数、十进制记数法,%s:字符串)
@@ -69,7 +67,7 @@ void OBNLogVisuailzationChart::setAxis(int curveNum,
     series = new QSplineSeries[curveNum];
     for(int iList = 0; iList < curveNum; iList ++)
     {
-        series[iList].setPen(QPen(_colorList[iList], 2, Qt::SolidLine));
+        series[iList].setPen(QPen(_colorList[iList], 1, Qt::SolidLine));
         series[iList].setPointsVisible(true);
 
         qchart->addSeries(&(series[iList]));//输入数据
@@ -99,23 +97,42 @@ void OBNLogVisuailzationChart::setAxisCurrentXName(const QString pXName)
 /// ====== 设置曲线颜色
 void OBNLogVisuailzationChart::setCurveColor(int iCurveNO, QColor pColor)
 {
+    series[iCurveNO].setColor(pColor);
+}
+
+/// ====== 设置是否显示当前曲线
+void OBNLogVisuailzationChart::changeLineDisplayState(int _curve_no, bool _state)
+{
+    if(!_state)
+    {
+        series[_curve_no].clear();
+    }
+    else
+    {
+        series[_curve_no].clear();
+        for(int jList = 0; jList < m_currentDisplayPoints[_curve_no].count(); jList ++)
+        {
+            series[_curve_no].append(m_currentDisplayPoints[_curve_no].at(jList));
+        }
+    }
 }
 
 /// ====== 设置显示当前选中曲线
-void OBNLogVisuailzationChart::setCurrentLogData(QList<QList<QPointF>> plistPointfList)
+void OBNLogVisuailzationChart::setCurrentLogData(QList<QList<QPointF> > &plistPointfList)
 {
+    m_currentDisplayPoints = plistPointfList;
+
     /// ====== 先将当前显示的曲线清除
-    for(int iSeries = 0; iSeries < plistPointfList.count(); iSeries ++)
+    for(int iSeries = 0; iSeries < m_currentDisplayPoints.count(); iSeries ++)
     {
         series[iSeries].clear();
     }
     /// ======
-    for(int iList = 0; iList < plistPointfList.count(); iList ++)
+    for(int iList = 0; iList < m_currentDisplayPoints.count(); iList ++)
     {
-        for(int jList = 0; jList < plistPointfList[iList].count(); jList ++)
+        for(int jList = 0; jList < m_currentDisplayPoints[iList].count(); jList ++)
         {
-            //qDebug() << "iList = " << iList << "\t jList = " << jList << "\t" << plistPointfList[iList].at(jList);
-            series[iList].append(plistPointfList[iList].at(jList));
+            series[iList].append(m_currentDisplayPoints[iList].at(jList));
         }
     }
 }

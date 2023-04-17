@@ -86,11 +86,18 @@ RNManager::RNManager(QWidget *parent):QMainWindow(parent)
     connect(m_toolManager, &RNMToolManager::signalSearchNode, this, [=](const uint & node){
         m_RNView->searchNode(node);
     });
+
+    /// ====== 标定相关开关
     connect(m_toolManager, &RNMToolManager::signalStartCalibration, this, [=](){
         slotStartCalibrationFunction();
     });
     connect(m_toolManager, &RNMToolManager::signalEndCalibration, this, [=](){
         slotEndCalibrationFunction();
+    });
+
+    /// ====== 自动存储设备信息开关
+    connect(m_toolManager, &RNMToolManager::signalStorageDeviceInformation, this, [=](bool _isStorageDeviceInform){
+            m_RNView->startOrstopSaveDeviceInformTimer(_isStorageDeviceInform);
     });
 
     connect(m_RNView, &RNMGraphView::updateNodes, this, [=](){
@@ -152,7 +159,8 @@ void RNManager::slotAtomicClockTame()
 /// ====== 设置D
 void RNManager::slotSetD()
 {
-    m_RNView->setDFunction();
+    int n_comboBoxIndex = m_toolManager->getDMode();
+    m_RNView->setDFunction(n_comboBoxIndex);
 }
 
 /// ====== 获取D
@@ -248,6 +256,8 @@ void RNManager::slotSetSearchIpScope()
             int avalid_num = 0;
             for(int i = 0; i < m_Nodes.size(); i ++)
             {
+                /// ====== 设置当前工区信息
+                m_Nodes[i]->setProjectInform(m_projInfo);
                 /// ====== 每个节点设置中介
                 m_Nodes[i]->setNodeMediator(m_nodeMediator);
                 /// ====== 设置状态控制器

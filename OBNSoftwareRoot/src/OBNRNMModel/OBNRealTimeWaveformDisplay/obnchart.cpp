@@ -1,6 +1,6 @@
 #include "obnchart.h"
 
-OBNChart::OBNChart(QWidget* parent, QString _chartname)
+OBNChart::OBNChart(QWidget* parent, QString _chartname): m_curentDataNum(0)
 {
     setParent(parent);
 
@@ -8,8 +8,7 @@ OBNChart::OBNChart(QWidget* parent, QString _chartname)
 
     /// ======
     series = new QSplineSeries(this);
-    series->setPen(QPen(Qt::blue,1,Qt::SolidLine));
-    series->setPointsVisible(true);
+    series->setPen(QPen(Qt::red,1,Qt::SolidLine));
 
     /// ======
     qchart = new QChart;
@@ -23,7 +22,6 @@ OBNChart::OBNChart(QWidget* parent, QString _chartname)
     chartview= new QChartView(qchart);
     chartview->setContentsMargins(0,0,0,0);
     chartview->setRenderHint(QPainter::Antialiasing);//防止图形走样
-    chartview->setStyleSheet("background-color:#FF0000");
 
     layout   = new QHBoxLayout(this);
     layout->setContentsMargins(0,0,0,0);
@@ -46,7 +44,7 @@ OBNChart::OBNChart(QWidget* parent, QString _chartname)
 /// _ymin:  Y轴最小值
 /// _ymax:  Y轴最大值
 /// _ytickc:Y轴坐标系显示段数
-void OBNChart::setAxis(QString _xname, qreal _xmin, qreal _xmax, int _xtickc, QString _yname, qreal _ymin, qreal _ymax, int _ytickc)
+void OBNChart::setAxis(QString _xname, qreal _xmin, qreal _xmax, int _xtickc, QString _yname, int _ymin, int _ymax, int _ytickc)
 {
     xname  = _xname;
     xmin   = _xmin;
@@ -65,7 +63,7 @@ void OBNChart::setAxis(QString _xname, qreal _xmin, qreal _xmax, int _xtickc, QS
     axisX->setTitleText(xname);  //设置描述
 
     axisY->setRange(ymin, ymax);
-    axisY->setLabelFormat("%u");
+    axisY->setLabelFormat("%d");
     axisY->setGridLineVisible(true);
     axisY->setTickCount(ytickc);
     axisY->setMinorTickCount(1);
@@ -80,11 +78,34 @@ void OBNChart::setAxis(QString _xname, qreal _xmin, qreal _xmax, int _xtickc, QS
     series->attachAxis(axisY);
 }
 
+void OBNChart::addData(int _data)
+{
+    if(m_curentDataNum < 1000)
+    {
+        m_curentDataNum += 1;
+    }
+    else
+    {
+//        xmax += 1;
+//        m_curentDataNum += 1;
+        m_curentDataNum = 0;
+        series->clear();
+    }
+
+    ymin   = qMin(ymin, _data);
+    ymax   = qMax(ymax, _data);
+
+    qchart->axisY()->setRange(ymin, ymax);
+//    qchart->axisX()->setRange(xmin, xmax);
+    QPointF point(QPoint(m_curentDataNum, _data));
+    series->append(point);
+}
+
 /// ====== 重新设置坐标系范围
 void OBNChart::setAddPointF(QPointF _pointInfom, qreal _xmin, qreal _xmax, qreal _ymin, qreal _ymax)
 {
-    /// ====== 当显示的点超过100个,将删除第一个,设置当前每次只能显示100个点
-    if(100 >= series->points().count())
+    /// ====== 当显示的点超过1000个,将删除第一个,设置当前每次只能显示1000个点
+    if(1000 >= series->points().count())
     {
         series->remove(0);
     }

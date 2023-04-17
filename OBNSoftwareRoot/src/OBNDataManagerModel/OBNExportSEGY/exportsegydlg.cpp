@@ -73,6 +73,33 @@ void ExportSegyDlg::updateScopeInfo()
     if(ui->recvRbtn->isChecked())
     {
         StationInfo *recvStationInfo = m_areaDataInfo->recvStationInfo;
+
+        /// ====== 获取线最小值和最大值,以及炮最小值和最大值
+        float lineMin = __FLT_MAX__, lineMax = __FLT_MIN__;
+        int   staMin  = INT_MAX, staMax  = INT_MIN;
+        for(int iLine = 0; iLine < recvStationInfo->lineNum; iLine ++)
+        {
+            for(int iStation = 0; iStation < recvStationInfo[iLine].staLines->staNum; iStation ++)
+            {
+                lineMin = qMin(lineMin, recvStationInfo[iLine].staLines->line);
+                lineMax = qMax(lineMax, recvStationInfo[iLine].staLines->line);
+                for(int iStations = 0; iStations < recvStationInfo[iLine].staLines[iStation].staNum; iStations ++)
+                {
+                    staMin = qMin(staMin, recvStationInfo[iLine].staLines[iStation].stations[iStations].sp);
+                    staMax = qMax(staMax, recvStationInfo[iLine].staLines[iStation].stations[iStations].sp);
+                }
+            }
+        }
+        ui->fromLineSpx->setRange(lineMin, lineMax);
+        ui->fromLineSpx->setValue(lineMin);
+        ui->toLineSpx->setRange(lineMin,   lineMax);
+        ui->toLineSpx->setValue(lineMax);
+
+        ui->fromStaSpx->setRange(staMin, staMax);
+        ui->fromStaSpx->setValue(staMin);
+        ui->toStaSpx->setRange(staMin, staMax);
+        ui->toStaSpx->setValue(staMax);
+#if 0
         //line
         ui->fromLineSpx->setRange(1,recvStationInfo->lineNum);
         ui->toLineSpx->setRange(1,recvStationInfo->lineNum);
@@ -89,6 +116,7 @@ void ExportSegyDlg::updateScopeInfo()
         ui->toStaSpx->setRange(1,max_staNum);
         ui->fromStaSpx->setValue(1);
         ui->toStaSpx->setValue(max_staNum);
+#endif
     }
 }
 
@@ -235,7 +263,7 @@ void ExportSegyDlg::on_outputPathBrwser_clicked()
 
 void ExportSegyDlg::on_startBtn_clicked()
 {
-    //判断处理数据类型-共检波点/共炮
+    /// ====== 判断处理数据类型-共检波点/共炮
     if(ui->recvRbtn->isChecked())
     {
         m_exportParameters.segyType = 0;
@@ -282,7 +310,6 @@ void ExportSegyDlg::on_startBtn_clicked()
         return;
     }
     m_exportParameters.outputPath = ui->outputFilePathEdit->text();
-
     /// ====== 共检波点数据文件信息
     if(m_exportParameters.segyType == 0)
     {
@@ -309,14 +336,11 @@ void ExportSegyDlg::on_startBtn_clicked()
         //text header
         m_exportParameters.textHeader = ui->textEdit->toPlainText();
     }
-
     //作业范围
     m_exportParameters.lineScope.first  = ui->fromLineSpx->value();
     m_exportParameters.lineScope.second = ui->toLineSpx->value();
-
     m_exportParameters.staScope.first  = ui->fromStaSpx->value();
     m_exportParameters.staScope.second = ui->toStaSpx->value();
-
     /// ====== 输出Job文件到工区目录
     QString jobFileName = m_exportParameters.projectPath+"/work/"+m_exportParameters.jobName;
     if(saveJobParameter(jobFileName, m_exportParameters))

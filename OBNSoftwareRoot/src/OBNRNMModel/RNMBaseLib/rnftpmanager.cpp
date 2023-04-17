@@ -359,8 +359,7 @@ void RNFtpManager::getMessage(Node *node,const UpdateCmd &msg)
     {
         ui->tableView->update(m_sortModel->mapFromSource(m_tableModel->index(rw,Ftp_Column_Memory)));
         //更新本地下载文件记录
-        qDebug()<<"Node "<<QString("G%1").arg(node->no(),3,10,QChar('0'))
-               <<"udpate memory and update local files-----";
+        qDebug()<<"Node "<<QString("G%1").arg(node->no(),3,10,QChar('0'))<<"udpate memory and update local files-----";
     }
     //更新下载进度
     else if(msg == Ftp_Update_Progress)
@@ -471,7 +470,6 @@ void RNFtpManager::on_clearMemBtn_clicked()
 {
     //选中节点
     m_nodeNeedSelected  = true;
-
     QMessageBox::StandardButton button = QMessageBox::warning(this,"Confirm","Are you sure to clear the GOBS?",QMessageBox::Yes|QMessageBox::Cancel);
     if(button != QMessageBox::Yes)
     {
@@ -602,7 +600,8 @@ QList<Node *> RNFtpManager::regetWaitingNodes(const bool &needSelected)
     bool checked;
     bool state;
     //1 需要选中
-    if(needSelected){
+    if(needSelected)
+    {
         for(int i=0;i<m_tableModel->rowCount();i++)
         {
             checked = m_tableModel->index(i,0).data(Qt::EditRole).toBool();
@@ -634,6 +633,7 @@ void RNFtpManager::startFtpWork(const FtpWork &ftpWk,const QVariant &arg)
         QMessageBox::warning(this,"warning","Ftp is busy for " + getWorkName(m_ftpWork));
         return;
     }
+    qDebug() << __FILE__ << "\t" << __LINE__ << __FUNCTION__;
     //选中，并且状态enable 的节点,下载数据
     m_waiting_nodes = regetWaitingNodes(m_nodeNeedSelected);
     if(m_waiting_nodes.size()<1)
@@ -651,6 +651,7 @@ void RNFtpManager::startFtpWork(const FtpWork &ftpWk,const QVariant &arg)
         node->setInfoString("Waiting");
         getMessage(node,Ftp_Update_Note);
     }
+    qDebug() << __FILE__ << "\t" << __LINE__ << __FUNCTION__;
     //取出节点到队列列
     for(int i = 0;i< m_maxWorkNodes;i++)
     {
@@ -659,20 +660,24 @@ void RNFtpManager::startFtpWork(const FtpWork &ftpWk,const QVariant &arg)
             m_working_nodes.append(m_waiting_nodes.takeFirst());
         }
     }
-    //开始下载
+    qDebug() << __FILE__ << "\t" << __LINE__ << __FUNCTION__;
+    /// ====== 开始下载
     foreach (Node *node, m_working_nodes)
     {
         node->startFtpWork(ftpWk,arg);
         QString startTimeInfo = ui->dateTimeStart->dateTime().toString("yyyy-MM-dd hh:mm:ss");
         QString endTimeInfo   = ui->dateTimeEnd->dateTime().toString("yyyy-MM-dd hh:mm:ss");
         QString SampInterPer  = ui->lineEditDisTime->text();
+        qDebug() << "startTimeInfo = " << startTimeInfo << "\t endTimeInfo = " << endTimeInfo << "\t SampInterPer = " << SampInterPer;
+        /// ====== 这句话出的问题,本地没有对应的配置文件
         node->setTimerInfo(startTimeInfo, endTimeInfo, SampInterPer);
     }
 }
 
 void RNFtpManager::startNextNode(const FtpWork &ftpWk,const QVariant &arg)
 {
-    if(!m_waiting_nodes.isEmpty()){
+    if(!m_waiting_nodes.isEmpty())
+    {
         Node *node = m_waiting_nodes.takeFirst();
         m_working_nodes.append(node);
         node->startFtpWork(ftpWk,arg);

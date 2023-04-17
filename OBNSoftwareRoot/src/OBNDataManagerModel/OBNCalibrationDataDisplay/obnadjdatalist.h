@@ -19,7 +19,7 @@ public:
     explicit OBNADJDataList(QWidget *parent = nullptr);
     ~OBNADJDataList();
     /// ====== 设置当前显示的数据
-    void setCurrentDataVector(const QList<ADJDispInform>&, const QList<ADJDispInform>&, const QList<ADJDispInform>&);
+    void setCurrentDataVector(const QVector<ADJDispInform>&, const QVector<ADJDispInform>&, const QVector<ADJDispInform>&);
 private:
     Ui::OBNADJDataList *ui;
 };

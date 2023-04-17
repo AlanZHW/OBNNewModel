@@ -23,6 +23,7 @@ typedef int UpdateCmd;
 #include <QColor>
 
 #include "rnmbaselib_global.h"
+#include "publicHostInform.h"
 
 enum LimitOperation
 {
@@ -81,11 +82,11 @@ struct StatisticsData
 //当前工作执行内容:查询文件，下载文件，设置采样率
 enum FtpWork
 {
-    NoneWork           = 0,
-    Updating           = 1,
-    DownLoadFiles      = 2,
-    ClearMemory        = 3,
-    SetSampleFrequecy  = 4
+    NoneWork           = 0, ///< 当前无任务
+    Updating           = 1, ///< 更新
+    DownLoadFiles      = 2, ///< 下载
+    ClearMemory        = 3, ///< 清除内存
+    SetSampleFrequecy  = 4  ///< 设置采样率
 };
 
 //是否按照时间段下载
@@ -162,9 +163,7 @@ public:
 
     //对应显示的GraphicsItem 项
     void setItem(NodeItem *item){nodeItem = item;}
-
     void setNodeMediator(NodeMediator *mediator){m_nodeMediator = mediator;}
-
     void setStateCtrler(StatusControler *stCtrler){m_stCtrler = stCtrler;}
 
     //TCP/IP 状态刷新-------------------
@@ -173,17 +172,20 @@ public:
     void stopRefresh();
     void refreshState();
     bool isRunning() const;
-
-    void nodeStartAtomicClockTameFunction();
-    void nodeEndAtomicClockTameFunction();
-    void nodeSetDFunction();
-    void nodeGetDFunction();
-
+    /// ======
+    void nodeStartAtomicClockTameFunction();    ///< ====== 启动原子钟驯服
+    void nodeEndAtomicClockTameFunction();      ///< ====== 退出原子钟驯服
+    void nodeSetDFunction(const int &index);                    ///< ====== SET D
+    void nodeGetDFunction();                    ///< ====== GET D
     /// ======标定
     void nodeCalibrationFunction(const bool);
-
-    //刷新参数，包括Ftp 和 tcp/Ip参数
+    /// ====== 刷新参数，包括Ftp 和 tcp/Ip参数
     void updateNode(const UpdateCmd &updateType = All_Update);
+
+    /// ====== 存储当前节点设备信息
+    void startSaveNodeDeviceInform();
+    void stopSaveNodeDeviceInform();
+    void functionSaveNodeDeviceInform();
 
     //ftp 操作
     void startFtpWork(const FtpWork &ftpWk,const QVariant &arg);
@@ -266,7 +268,12 @@ public:
     State  stateById(const int &id){
         return m_state[id+1];
     }
-
+    /// ====== 设置当前工区信息
+    void setProjectInform(const ProjectInfo& _projectInform)
+    {
+        m_projectInfoNode.ProjectPath = _projectInform.ProjectPath;
+        m_projectInfoNode.ProjectName = _projectInform.ProjectName;
+    }
 signals:
     void signalFtpStart(const int &ftpWk,const QVariant &arg);
 
@@ -306,6 +313,11 @@ private:
     NodeQuery        *m_nodeQuery;
     FtpManager       *m_ftpManager;
     QColor           *m_colors;
+
+    /// ====== 自动保存设备信息定时器
+    QTimer mSaveDeviceInformTimer;
+    ProjectInfo m_projectInfoNode;
+
 };
 
 //状态控制

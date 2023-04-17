@@ -19,7 +19,7 @@ OBNADJDataList::~OBNADJDataList()
 }
 
 /// ====== 设置当前显示的数据
-void OBNADJDataList::setCurrentDataVector(const QList<ADJDispInform>& _adjXDataInform, const QList<ADJDispInform>& _adjYDataInform, const QList<ADJDispInform>& _adjZDataInform)
+void OBNADJDataList::setCurrentDataVector(const QVector<ADJDispInform>& _adjXDataInform, const QVector<ADJDispInform>& _adjYDataInform, const QVector<ADJDispInform>& _adjZDataInform)
 {
     if(0 == _adjXDataInform.count() ||0 == _adjYDataInform.count() || 0 == _adjZDataInform.count())
     {

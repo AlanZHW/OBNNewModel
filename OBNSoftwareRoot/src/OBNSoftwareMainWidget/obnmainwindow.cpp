@@ -37,7 +37,7 @@ OBNMainWindow::OBNMainWindow(QWidget *parent) :
     /// ====== 设置软件标题
     setWindowTitle(tr("海底节点-控制软件"));    ///< Ocean bottom node
     /// ====== 设置软件默认最大化显示
-//    setWindowState(Qt::WindowMaximized);
+    setWindowState(Qt::WindowMaximized);
 
     QDir bin_dir(QCoreApplication::applicationDirPath());
     bin_dir.cdUp();
@@ -382,6 +382,7 @@ void OBNMainWindow::slotExportSEGY(bool)
     if(NULL == m_exportSEGYDialog)
     {
         m_exportSEGYDialog = new ExportSegyDlg(this);
+        m_exportSEGYDialog->setProjectInfo(m_projectInform);
     }
     m_exportSEGYDialog->open();
 }

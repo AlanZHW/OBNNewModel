@@ -4,27 +4,38 @@
 #
 #-------------------------------------------------
 
-QT       += core  sql
-QT       -= gui
+QT       += core gui
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = ExportSegyProgram
 CONFIG   += console
 CONFIG   -= app_bundle
 
+include(../../../obnsoftwareroot.pri)
+
 TEMPLATE = app
 TARGET   = ExportSegyProgram
-DESTDIR  += $$OBN_RUN_PATH
-
-include(../../obnsoftwareroot.pri)
+#DESTDIR  += $$OBN_RUN_PATH
 
 INCLUDEPATH += $$OBN_INCLUDE_PATH
-INCLUDEPATH += $$OBN_ROOT_PATH/OBNOtherLibraries/Core
-INCLUDEPATH += $$OBN_ROOT_PATH/OBNOtherLibraries/GPublicSo
-INCLUDEPATH += $$OBN_ROOT_PATH/OBNOtherLibraries/Algorithm
+INCLUDEPATH += $$OBN_ROOT_PATH/src/OBNOtherLibraries/Core
+INCLUDEPATH += $$OBN_ROOT_PATH/src/OBNOtherLibraries/GPublicSo
+INCLUDEPATH += $$OBN_ROOT_PATH/src/OBNOtherLibraries/Algorithm
+contains(QMAKE_HOST.os,Linux){
+INCLUDEPATH += $$OBN_INCLUDE_PATH/Linux
+}else{
+INCLUDEPATH += $$OBN_INCLUDE_PATH/Windows
+}
 
-LIBS  += -L$$OBN_RUN_PATH -lCore -lGPublicSo -lAlgorithm #-lFrftProcess
+LIBS += -L$$OBN_RUN_PATH -lCore -lGPublicSo -lAlgorithm
 
-#LIBS  += -L$$GOBS_THIRDPARTY_LIB -llibfftw3f-3
+contains(QMAKE_HOST.os,Linux){
+LIBS += -L$$OBN_RUN_PATH/Linux -lfftw3f
+}else{
+LIBS += -L$$OBN_RUN_PATH/Windows -lfftw3f-3
+}
+
+
+#LIBS  += -L$$GOBS_THIRDPARTY_LIB
 
 
 INCLUDEPATH += $$GOBS_SRC/Algorithm \
@@ -38,10 +49,10 @@ SOURCES += main.cpp \
         responseprocessorf.cpp
 
 HEADERS += \
-    abstractsegyproducer.h \
-    recvorientedsegy.h \
-    shotorientedsegy.h \
-    responseprocessorf.h
+        abstractsegyproducer.h \
+        recvorientedsegy.h \
+        shotorientedsegy.h \
+        responseprocessorf.h
 
 win32-msvc* {
     QMAKE_CXXFLAGS *=  /wd"4100"

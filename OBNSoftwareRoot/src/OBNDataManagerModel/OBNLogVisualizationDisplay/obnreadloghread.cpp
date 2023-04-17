@@ -27,9 +27,10 @@ void OBNReadLoghread::run()
     {
         SuctLOGDrawInform nALogFileInformList;
         nALogFileInformList.nLineColor = QColor::fromRgb(rand()%256,rand()%256,rand()%256);
-        QFileInfo fileInform(m_logfNameList[iFileNO]);
-        nALogFileInformList.nNodeName  = fileInform.fileName().replace("."+fileInform.suffix(), "");
 
+        QFileInfo   fileInform(m_logfNameList[iFileNO]);
+        QStringList path = fileInform.path().split("/");
+        nALogFileInformList.nNodeName  = path.at(path.length()-2);//fileInform.fileName().replace("."+fileInform.suffix(), "");
 
         QFile openFile(m_logfNameList[iFileNO]);
         if(!openFile.open(QIODevice::ReadOnly|QIODevice::Text))
@@ -42,7 +43,6 @@ void OBNReadLoghread::run()
         QTextStream in(&openFile);
         /// ======
         QString ReadLine = in.readLine();
-
         QStringList nReadLineList;
         QStringList nScreenDataList;
         while(!in.atEnd())
@@ -101,7 +101,6 @@ void OBNReadLoghread::run()
 
         /// ====== 关闭打开的文件
         openFile.close();
-
         /// ======
         nLogInformList.append(nALogFileInformList);
 

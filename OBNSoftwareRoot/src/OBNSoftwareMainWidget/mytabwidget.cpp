@@ -174,7 +174,7 @@ void MyTabWidget::setLMGRDisplay(const QString& _projPath, const QString& _projN
 {    
     LineManager *m_dislayArea = new LineManager(this);
     m_dislayArea->setWindowFlags(Qt::Widget);
-//    m_dislayArea->setStyleSheet("QWidget{background-color:#EBEBEB;}");
+    m_dislayArea->setStyleSheet("QWidget{background-color:#EBEBEB;}");
     m_dislayArea->setAttribute(Qt::WA_DeleteOnClose);
     m_dislayArea->setCurrentProject(_projPath, _projName);
     m_dislayArea->slotOpenArea(_areaName);
@@ -186,7 +186,7 @@ void MyTabWidget::setLMGRDisplay(const QString& _projPath, const QString& _projN
 void MyTabWidget::setGPositiSystem()
 {
     GPositionSystem* nGPositionSystem = new GPositionSystem(this);
-//    nGPositionSystem->setStyleSheet("QWidget{background-color:#EBEBEB;}");
+    nGPositionSystem->setStyleSheet("QWidget{background-color:#EBEBEB;}");
     nGPositionSystem->setAttribute(Qt::WA_DeleteOnClose);
     const int index = addTab(nGPositionSystem, QIcon(":/image/OpenArea.png"), nGPositionSystem->windowTitle());
     setCurrentIndex(index);
@@ -195,7 +195,7 @@ void MyTabWidget::setGPositiSystem()
 void MyTabWidget::setDisplaySEGY(QList<SegyFileHandle*> _pSegyFileHandle, int _maxTrace, int _startTrace, OpenFilesType _openFilesType)
 {
     OBNDisplaySEGY* nDisplaySEGY = new OBNDisplaySEGY(this);
-//    nDisplaySEGY->setStyleSheet("QWidget{background-color:#EBEBEB;}");
+    nDisplaySEGY->setStyleSheet("QWidget{background-color:#EBEBEB;}");
     nDisplaySEGY->setAttribute(Qt::WA_DeleteOnClose);
     nDisplaySEGY->setCurrentSEGYFileHandles(_pSegyFileHandle, _maxTrace, _startTrace, _openFilesType);
     const int index = addTab(nDisplaySEGY, QIcon(":/image/OpenArea.png"), nDisplaySEGY->windowTitle());
@@ -206,7 +206,7 @@ void MyTabWidget::setDisplaySEGY(QList<SegyFileHandle*> _pSegyFileHandle, int _m
 void MyTabWidget::setDisplayLogInform()
 {
     OBNLogVisuailzationDisplay* nDisplayLOG = new OBNLogVisuailzationDisplay(this);
-//    nDisplayLOG->setStyleSheet("QWidget{background-color:#EBEBEB;}");
+    nDisplayLOG->setStyleSheet("QWidget{background-color:#EBEBEB;}");
     nDisplayLOG->setAttribute(Qt::WA_DeleteOnClose);
     const int index = addTab(nDisplayLOG, QIcon(":/image/OpenArea.png"), nDisplayLOG->windowTitle());
     setCurrentIndex(index);
@@ -216,7 +216,7 @@ void MyTabWidget::setDisplayLogInform()
 void MyTabWidget::setStdManagerDiffTime()
 {
     GobsDtMagerDiffTime* nDiffTime = new GobsDtMagerDiffTime(this);
-//    nDiffTime->setStyleSheet("QWidget{background-color:#EBEBEB;}");
+    nDiffTime->setStyleSheet("QWidget{background-color:#EBEBEB;}");
     nDiffTime->setAttribute(Qt::WA_DeleteOnClose);
     const int index = addTab(nDiffTime, QIcon(":/image/OpenArea.png"), nDiffTime->windowTitle());
     setCurrentIndex(index);
@@ -228,7 +228,7 @@ void MyTabWidget::setRNMMainWindow()
     RNManager* nRNManager = new RNManager(this);
     nRNManager->setProjectInform(m_projectPath, m_projectName);
     nRNManager->setWindowFlags(Qt::Widget);
-//    nRNManager->setStyleSheet("QWidget{background-color:#EBEBEB;}");
+    nRNManager->setStyleSheet("QWidget{background-color:#EBEBEB;}");
     nRNManager->setAttribute(Qt::WA_DeleteOnClose);
     const int index = addTab(nRNManager, QIcon(":/image/OpenArea.png"), nRNManager->windowTitle());
     setCurrentIndex(index);
@@ -238,7 +238,7 @@ void MyTabWidget::setRNMMainWindow()
 void MyTabWidget::setOTAProgrameWindow()
 {
     OBNLowerCumputerOTA* nOtaProgream = new OBNLowerCumputerOTA(this);
-//    nOtaProgream->setStyleSheet("QWidget{background-color:#EBEBEB;}");
+    nOtaProgream->setStyleSheet("QWidget{background-color:#EBEBEB;}");
     nOtaProgream->setAttribute(Qt::WA_DeleteOnClose);
     const int index = addTab(nOtaProgream, QIcon(":/image/OpenArea.png"), nOtaProgream->windowTitle());
     setCurrentIndex(index);
@@ -248,7 +248,7 @@ void MyTabWidget::setOTAProgrameWindow()
 void MyTabWidget::setRealTimeWaveformDispProgrameWindow()
 {
     OBNRealTimeWaveRoot* nRealTimeWaveformDispProgream = new OBNRealTimeWaveRoot(this);
-//    nRealTimeWaveformDispProgream->setStyleSheet("QWidget{background-color:#EBEBEB;}");
+    nRealTimeWaveformDispProgream->setStyleSheet("QWidget{background-color:#EBEBEB;}");
     nRealTimeWaveformDispProgream->setAttribute(Qt::WA_DeleteOnClose);
     const int index = addTab(nRealTimeWaveformDispProgream, QIcon(":/image/OpenArea.png"), nRealTimeWaveformDispProgream->windowTitle());
     setCurrentIndex(index);
@@ -257,7 +257,7 @@ void MyTabWidget::setRealTimeWaveformDispProgrameWindow()
 void MyTabWidget::setCalibrationDataDisplayProgrameWindow()
 {
     OBNCalibrationDataDisplay* nRealTimeWaveformDispProgream = new OBNCalibrationDataDisplay(this);
-//    nRealTimeWaveformDispProgream->setStyleSheet("QWidget{background-color:#EBEBEB;}");
+    nRealTimeWaveformDispProgream->setStyleSheet("QWidget{background-color:#EBEBEB;}");
     nRealTimeWaveformDispProgream->setAttribute(Qt::WA_DeleteOnClose);
     const int index = addTab(nRealTimeWaveformDispProgream, QIcon(":/image/OpenArea.png"), nRealTimeWaveformDispProgream->windowTitle());
     setCurrentIndex(index);
@@ -267,7 +267,7 @@ void MyTabWidget::setCalibrationDataDisplayProgrameWindow()
 void MyTabWidget::setJobMonitorProgreamWindow()
 {
     OBNJobMonitorPrograme* nJobMonitorProgream = new OBNJobMonitorPrograme(this);
-//    nJobMonitorProgream->setStyleSheet("QWidget{background-color:#EBEBEB;}");
+    nJobMonitorProgream->setStyleSheet("QWidget{background-color:#EBEBEB;}");
     nJobMonitorProgream->setAttribute(Qt::WA_DeleteOnClose);
     const int index = addTab(nJobMonitorProgream, QIcon(":/image/OpenArea.png"), nJobMonitorProgream->windowTitle());
     setCurrentIndex(index);

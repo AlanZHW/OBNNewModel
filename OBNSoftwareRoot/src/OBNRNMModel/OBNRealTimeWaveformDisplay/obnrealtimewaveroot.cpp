@@ -2,18 +2,37 @@
 #include "ui_obnrealtimewaveroot.h"
 
 OBNRealTimeWaveRoot::OBNRealTimeWaveRoot(QWidget *parent) :
-    QMainWindow(parent),m_obnSeatchHosts(NULL),m_obsHostInformSetup(NULL),
+    QMainWindow(parent),m_curentDispWaveform(false),m_obnSeatchHosts(NULL),
     ui(new Ui::OBNRealTimeWaveRoot)
 {
     ui->setupUi(this);
     setWindowTitle(tr("实时波形显示"));
-    setWindowState(Qt::WindowMaximized);
-
+//    setWindowState(Qt::WindowMaximized);
     initWindow();
+
+    ui->tableWidget->setMaximumWidth(248);
 }
 
 OBNRealTimeWaveRoot::~OBNRealTimeWaveRoot()
 {
+    /// ====== 关闭显示实时波形
+    if(m_curentDispWaveform)
+    {
+        m_curentDispWaveform = false;
+        for(int iList = 0; iList < m_waveDispGroup.count(); iList ++)
+        {
+            m_waveDispGroup[iList]->exitCollection();
+        }
+    }
+    /// ====== 关闭采集
+    if(m_curentCollecting)
+    {
+        m_curentCollecting = false;
+        for(int iList = 0; iList < m_waveDispGroup.count(); iList ++)
+        {
+            m_waveDispGroup[iList]->stopDisplayWaveform();
+        }
+    }
     delete ui;
 }
 
@@ -26,34 +45,26 @@ void OBNRealTimeWaveRoot::initWindow()
         {
             m_obnSeatchHosts = new ONBRetrieveAvailableNodes(this);
             connect(m_obnSeatchHosts, &ONBRetrieveAvailableNodes::signalCurrentHostsSend, this, [=](QVector<HostsState> hostStateVecotr){
-                QStringList nCurrentHostIDList;
+                QList<TCPInform> n_tcpInformList;
                 for(int iList = 0; iList < hostStateVecotr.count(); iList ++)
                 {
-                    QString nHostID = hostStateVecotr[iList].ip;
-                    nCurrentHostIDList.append(nHostID);
+                    TCPInform nTempTCPInform;
+                    nTempTCPInform.ip       = hostStateVecotr[iList].ip;
+                    nTempTCPInform.hostName = hostStateVecotr[iList].hostNum;
+                    nTempTCPInform.port     = 5000;
+                    n_tcpInformList.append(nTempTCPInform);
                 }
-                if(NULL != m_obsHostInformSetup)
-                {
-                    delete m_obsHostInformSetup;
-                    m_obsHostInformSetup = NULL;
-                }
-                m_obsHostInformSetup = new OBNRealTimeWaveformSetup(this);
-                connect(m_obsHostInformSetup, &OBNRealTimeWaveformSetup::signalCurrentTcpInformList, this, [=](const QList<TCPInform>& _tcpInformList){
-                    setCurrentAvailableHostInformList(_tcpInformList);
-                    m_obsHostInformSetup->close();
-                });
-                m_obsHostInformSetup->setCurrentHostInform(nCurrentHostIDList);
-                m_obsHostInformSetup->open();
+                setCurrentAvailableHostInformList(n_tcpInformList);
             });
         }
         m_obnSeatchHosts->open();
     });
-
     ui->toolBar->addSeparator();
 
     m_actionStartCollection = new QAction(QIcon(m_Path+"/Image/start.png"), tr("开始/停止采集"));
     ui->toolBar->addAction(m_actionStartCollection);
     connect(m_actionStartCollection, &QAction::triggered, this, [=](const bool){
+        /// ====== 描述当前是否已经点击了开始采集
         if(!m_curentCollecting)
         {
             m_curentCollecting = true;
@@ -75,13 +86,13 @@ void OBNRealTimeWaveRoot::initWindow()
             m_actionStartDispWaveform->setEnabled(false);
         }
     });
-
     ui->toolBar->addSeparator();
 
     m_actionStartDispWaveform = new QAction(QIcon(m_Path+"/Image/start.png"), tr("开始/停止显示"));
     ui->toolBar->addAction(m_actionStartDispWaveform);
     m_actionStartDispWaveform->setEnabled(false);
     connect(m_actionStartDispWaveform, &QAction::triggered, this, [=](const bool){
+        /// ====== 描述当前是否已经开始显示波形数据
         if(m_curentDispWaveform)
         {
             m_curentDispWaveform = false;
@@ -106,34 +117,78 @@ void OBNRealTimeWaveRoot::initWindow()
 /// ====== 设置当前可用设备列表
 void OBNRealTimeWaveRoot::setCurrentAvailableHostInformList(const QList<TCPInform> & pHostInformList)
 {
-    if(0 != m_waveDispGroup.count())
+    m_curentHostTCPInform = pHostInformList;
+
+    /// ====== 设置界面左侧表格内容
+    ui->tableWidget->setRowCount(m_curentHostTCPInform.count());
+    ui->tableWidget->setColumnCount(3);
+    QStringList nTableWidgetHeaders;
+    nTableWidgetHeaders << tr("选中状态") << tr("节点编号") << tr("波形颜色");
+    ui->tableWidget->setHorizontalHeaderLabels(nTableWidgetHeaders);
+    ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    for(int iRow = 0; iRow < m_curentHostTCPInform.count(); iRow ++)
     {
-        m_waveDispGroup.clear();
+        QCheckBox* nCheckBox = new QCheckBox;
+        connect(nCheckBox, &QCheckBox::stateChanged, this, &OBNRealTimeWaveRoot::slotChangeCheckBoxState);
+        ui->tableWidget->setCellWidget(iRow, 0, nCheckBox);
+
+        ui->tableWidget->setItem(iRow, 1, new QTableWidgetItem(m_curentHostTCPInform[iRow].hostName));
+
+        QColor lineColor = QColor::fromRgb(rand()%256,rand()%256,rand()%256);
+        QLabel * nLabelColor = new QLabel;
+        nLabelColor->setStyleSheet("QLabel{background-color:#" + QString::number(lineColor.rgba(), 16)+"}");
+        ui->tableWidget->setCellWidget(iRow, 2, nLabelColor);
     }
-
-    QScrollArea* mScrollArea = new QScrollArea;
-    mScrollArea->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-    mScrollArea->setWidgetResizable(true);
-
-    QVBoxLayout* nVBoxLayout = new QVBoxLayout;
-    nVBoxLayout->setSizeConstraint(QVBoxLayout::SetMinAndMaxSize);
-    for(int iList = 0; iList < pHostInformList.count(); iList ++)
-    {
-        OBNRealTimeWaveformDispGroup* nWaveformDisp = new OBNRealTimeWaveformDispGroup();
-        nWaveformDisp->setFixedHeight(800);
-        nWaveformDisp->setCurrentDeviceID(pHostInformList[iList].ip, pHostInformList[iList].port);
-        nVBoxLayout->addWidget(nWaveformDisp);
-
-        m_waveDispGroup.append(nWaveformDisp);
-    }
-    /// ======
-    QWidget* widget = new QWidget(this);
-    widget->setLayout(nVBoxLayout);
-    /// ======
-    mScrollArea->setWidget(widget);
-    /// ======
-    QVBoxLayout* mainHBoxLayout = new QVBoxLayout;
-    mainHBoxLayout->addWidget(mScrollArea);
-
-    ui->widgetRealTimeExhibition->setLayout(mainHBoxLayout);
 }
+
+/// ====== 改变当前表格节点选项选中状态
+void OBNRealTimeWaveRoot::slotChangeCheckBoxState(const int& index)
+{
+    if(0 == index)
+    {
+        /// ====== 显示节点
+        QString hostName;
+        for(int iRow = 0; iRow < ui->tableWidget->rowCount(); iRow ++)
+        {
+            if((QCheckBox*)ui->tableWidget->cellWidget(iRow, 0) == sender())
+            {
+                hostName = ui->tableWidget->item(iRow,1)->text();
+                break;
+            }
+        }
+        for(int iTab = 0; iTab < ui->tabWidget->count(); iTab ++)
+        {
+            if(hostName == ui->tabWidget->tabText(iTab))
+            {
+                ui->tabWidget->removeTab(iTab);
+            }
+        }
+    }
+    else
+    {
+        /// ====== 显示节点
+        for(int iRow = 0; iRow < ui->tableWidget->rowCount(); iRow ++)
+        {
+            if((QCheckBox*)ui->tableWidget->cellWidget(iRow, 0) == sender())
+            {
+                OBNRealTimeWaveformDispGroup* nWaveformDisp = new OBNRealTimeWaveformDispGroup;
+                nWaveformDisp->setCurrentDeviceID(m_curentHostTCPInform[iRow].ip, m_curentHostTCPInform[iRow].port);
+                /// ====== 加载节点到图像显示区域
+                ui->tabWidget->addTab(nWaveformDisp, m_curentHostTCPInform[iRow].hostName);
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+

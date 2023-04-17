@@ -20,6 +20,7 @@ void CreateAreaDialog::run()
         return;
     }
     QString areaFile = m_projInfo.ProjectPath + Dir_Separator+area_name;
+    qDebug() << "areaFile = " << areaFile;
     /// ======
     QFileInfo info(areaFile);
     //已经存在文件或者目录
@@ -38,14 +39,22 @@ void CreateAreaDialog::run()
             switch(box.exec())
             {
             case QMessageBox::Yes:
+            {
                 //先删除该工区
-                emit signalDeleteArea(area_name);
+                int ok = Area::deleteArea(m_projInfo,area_name);
+                if(ok != 0)
+                {
+                    QMessageBox::warning(this,"warning", QString("Delete Area Failed.ok=%1").arg(ok));
+                    return;
+                }
+            }
                 break;
             case QMessageBox::No:
                 return;
             }
         }
     }
+
     /// ====== 开始执行新建观测系统功能
     setProgressInfo(tr("正在读取SPS文件"), 1);
     AreaDataInfo  *areaDataInfo = new AreaDataInfo;

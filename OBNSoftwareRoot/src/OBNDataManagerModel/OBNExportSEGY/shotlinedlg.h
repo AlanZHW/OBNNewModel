@@ -16,10 +16,8 @@ class ShotLineDlg : public QDialog
 public:
     ShotLineDlg(QDialog *parent = 0);
     void setShotLineFiles(const QStringList &fileList);
-
     bool saveShotLineFiles(const QString &fileName); //保存
     QStringList shotLineFiles() const{return m_shotLineFiles;}
-
 private:
     void         initDlg();
     QListWidget *listWidget;

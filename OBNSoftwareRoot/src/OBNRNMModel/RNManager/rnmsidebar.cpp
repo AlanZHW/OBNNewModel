@@ -105,7 +105,7 @@ void FiltersBox::initBox()
     groupBox->addButton(temperatureBtn,Temperature);
 
     //Pressure
-    QRadioButton  *pressureBtn = new QRadioButton(tr("仓压"));  /// Pressure
+    QRadioButton  *pressureBtn = new QRadioButton(tr("舱压"));  /// Pressure
     mainLayout->addWidget(pressureBtn);
     groupBox->addButton(pressureBtn,Pressure);
 

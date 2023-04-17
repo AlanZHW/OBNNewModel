@@ -32,7 +32,7 @@ int read_sps_r_file(const QString &fileName,StationInfo *stationInfo)
     Station stationOne;
     nTempLineNO     = dataInformList[1].toFloat();
     stationOne.line = dataInformList[1].toFloat();
-    stationOne.sp   = dataInformList[2].toInt();
+    stationOne.sp   = dataInformList[2].toFloat();
     stationOne.x    = dataInformList[9].toFloat();
     stationOne.y    = dataInformList[10].toFloat();
     stationOne.del  = dataInformList[11].toFloat();
@@ -43,6 +43,7 @@ int read_sps_r_file(const QString &fileName,StationInfo *stationInfo)
         if(nLineStrInform.startsWith("R"))
         {
             dataInformList = nLineStrInform.split(" ");
+
             if(nTempLineNO != dataInformList[1].toFloat())
             {
                 StaLine   *staline = new StaLine;
@@ -63,7 +64,7 @@ int read_sps_r_file(const QString &fileName,StationInfo *stationInfo)
 
             Station stationOne;
             stationOne.line     = dataInformList[1].toFloat();
-            stationOne.sp       = dataInformList[2].toInt();
+            stationOne.sp       = dataInformList[2].toFloat();
             stationOne.x        = dataInformList[9].toFloat();
             stationOne.y        = dataInformList[10].toFloat();
             stationOne.del      = dataInformList[11].toFloat();
@@ -96,21 +97,6 @@ int read_sps_r_file(const QString &fileName,StationInfo *stationInfo)
     staLines.clear();
     /// ====== 关闭打开的文件
     fileR.close();
-
-//    /// debug  test-------------------------------------------
-//    qDebug()<<"type:"<<stationInfo->type <<"line num:"<<stationInfo->lineNum;
-//    for(int i=0 ;i<stationInfo->lineNum;i++)
-//    {
-//        qDebug()<<"line:"<<stationInfo->staLines[i].line <<"station num:"<<stationInfo->staLines[i].staNum;
-//        for(int j=0;j<stationInfo->staLines[i].staNum;j++)
-//        {
-//            qDebug()<<"line:"<<stationInfo->staLines[i].stations[j].line
-//                    <<"sp:"<<stationInfo->staLines[i].stations[j].sp
-//                    <<"sidx:"<<stationInfo->staLines[i].stations[j].sidx
-//                    <<"x:"<<stationInfo->staLines[i].stations[j].x
-//                    <<"y:"<<stationInfo->staLines[i].stations[j].y;
-//        }
-//    }
     return 0;
 }
 
@@ -141,7 +127,7 @@ int read_sps_s_file(const QString &fileName,StationInfo *stationInfo)
     Station stationOne;
     nTempLineNO     = dataInformList[2].toFloat();
     stationOne.line = dataInformList[2].toFloat();
-    stationOne.sp   = dataInformList[1].toInt();
+    stationOne.sp   = dataInformList[1].toFloat();
     stationOne.x    = dataInformList[10].toFloat();
     stationOne.y    = dataInformList[11].toFloat();
     stationOne.del  = dataInformList[12].toFloat();
@@ -184,7 +170,7 @@ int read_sps_s_file(const QString &fileName,StationInfo *stationInfo)
 
             Station stationOne;
             stationOne.line = dataInformList[2].toFloat();
-            stationOne.sp   = dataInformList[1].toInt();
+            stationOne.sp   = dataInformList[1].toFloat();
             stationOne.x    = dataInformList[10].toFloat();
             stationOne.y    = dataInformList[11].toFloat();
             stationOne.del  = dataInformList[12].toFloat();

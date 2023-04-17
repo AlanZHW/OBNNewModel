@@ -2,9 +2,11 @@
 #define OBNREALTIMEWAVEROOT_H
 
 #include <QIcon>
+#include <QLabel>
+#include <QAction>
 #include <QDialog>
 #include <QToolBar>
-#include <QAction>
+#include <QCheckBox>
 #include <QVBoxLayout>
 #include <QScrollArea>
 #include <QMainWindow>
@@ -27,8 +29,13 @@ public:
     ~OBNRealTimeWaveRoot();
     /// ====== 设置当前可用设备列表
     void setCurrentAvailableHostInformList(const QList<TCPInform>&);
+
 private:
     void initWindow();
+
+private slots:
+    void slotChangeCheckBoxState(const int&);
+
 private:
     QAction* m_actionStartCollection;   ///< 开始采集数据
     bool     m_curentCollecting = false;
@@ -36,8 +43,8 @@ private:
     bool     m_curentDispWaveform;
 
     QVector<HostsState> m_hostVertor;
+    QList<TCPInform>    m_curentHostTCPInform;
     ONBRetrieveAvailableNodes* m_obnSeatchHosts;
-    OBNRealTimeWaveformSetup*  m_obsHostInformSetup;
     QList<OBNRealTimeWaveformDispGroup*> m_waveDispGroup;
     Ui::OBNRealTimeWaveRoot *ui;
 };

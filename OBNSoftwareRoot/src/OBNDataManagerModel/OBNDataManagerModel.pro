@@ -5,6 +5,7 @@ SUBDIRS += \
         QCPlotter   \
         OBNDisplaySEGY \
         GPositionSystem  \
+        ExportSegyProgram \
         OBNExportSEGY \
         OBNOpenSEGY \
         OBNLogVisualizationDisplay  \

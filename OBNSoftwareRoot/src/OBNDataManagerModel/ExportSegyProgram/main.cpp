@@ -2,7 +2,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 
-#include "public.h"
+#include "publicHostInform.h"
 #include "abstractsegyproducer.h"
 #include "recvorientedsegy.h"
 #include "shotorientedsegy.h"

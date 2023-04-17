@@ -18,10 +18,10 @@ struct FtpCmd
 
 struct FilesData
 {
-    QList<QUrlInfo>   urlInfos;     //节点所有文件信息
-    QStringList       localFiles;   //本地文件
-    QStringList       workingFiles; //待下载文件
-    QString           currentFile;  //当前正在下载文件
+    QList<QUrlInfo>   urlInfos;     /// 节点所有文件信息
+    QStringList       localFiles;   /// 本地文件
+    QStringList       workingFiles; /// 待下载文件
+    QString           currentFile;  /// 当前正在下载文件
 };
 
 //Ftp 功能类
@@ -72,17 +72,18 @@ private:
     QFtp             *m_Ftp;
     QFile            *m_file;
     FilesData         m_FilesData;
-
     int               m_workStep;
     FtpCmd            m_ftpCmds;
     QString           m_workPath;
     int               m_sampleFrequency;
-
     QString           node_ip;
     QString           node_no;
     bool              m_stoped;
-
     int               m_downloadType;
+
+    QString           n_curentQurtyPath;    ///< 当前查询的目录
+    QStringList       m_dataDirNameList;    ///< 存放ftp查询到的远程机器上的存放数据的目录列表
+    QMap<QString, QString> m_nameAndDirMap; ///< 当前文件目录和文件名map
 };
 
 

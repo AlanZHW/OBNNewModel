@@ -2,7 +2,7 @@
 
 
 OBNCalibratonDataChart::OBNCalibratonDataChart(const QString & pName, QWidget *parent)
-    : QWidget(parent), series(NULL), seriesZero(NULL), isDisplayLineInform(false), m_lineColorWidget(NULL)
+    : QWidget(parent), series(NULL), seriesZero(NULL), isDisplayLineInform(false)
 {
     setParent(parent);
 
@@ -93,6 +93,7 @@ void OBNCalibratonDataChart::setAxis(int curveNum,
     for(int iList = 0; iList < curveNum; iList ++)
     {
         series[iList].setPen(QPen(_colorList[iList], 1, Qt::SolidLine));
+        series[iList].setUseOpenGL(true);
         qchart->addSeries(&(series[iList]));//输入数据
         series[iList].attachAxis(axisX);
         series[iList].attachAxis(axisY);
@@ -104,10 +105,6 @@ void OBNCalibratonDataChart::setAxis(int curveNum,
         seriesZero[iList].attachAxis(axisX);
         seriesZero[iList].attachAxis(axisY);
     }
-//    if(NULL == m_lineColorWidget)
-//    {
-//        m_lineColorWidget = new OBNCalibrationLineColorWidget(this);
-//    }
 }
 
 /// ====== 重新设置当前坐标系
@@ -130,24 +127,44 @@ void OBNCalibratonDataChart::setAxisCurrentXName(const QString pXName)
 /// ====== 设置曲线颜色
 void OBNCalibratonDataChart::setCurveColor(int iCurveNO, QColor pColor)
 {
+    series[iCurveNO].setColor(pColor);
+}
+
+/// ====== 设置是否显示当前线
+void OBNCalibratonDataChart::setCurentLienDispState(int iCurveNO, bool _displayState)
+{
+    if(_displayState)
+    {
+        series[iCurveNO].clear();
+        for(int iList = 0; iList < m_pointInformsList[iCurveNO].count(); iList ++)
+        {
+            series[iCurveNO].append(m_pointInformsList[iCurveNO][iList].nPointInfom);
+        }
+    }
+    else
+    {
+        series[iCurveNO].clear();
+    }
 }
 
 /// ====== 设置显示当前选中曲线
 void OBNCalibratonDataChart::setCurrentLogData(QList<QList<PointInform>> plistPointfList)
 {
+    m_pointInformsList = plistPointfList;
+
     /// ====== 先将当前显示的曲线清除
-    for(int iSeries = 0; iSeries < plistPointfList.count(); iSeries ++)
+    for(int iSeries = 0; iSeries < m_pointInformsList.count(); iSeries ++)
     {
         series[iSeries].clear();
     }
     /// ======
-    for(int iList = 0; iList < plistPointfList.count(); iList ++)
+    for(int iList = 0; iList < m_pointInformsList.count(); iList ++)
     {
         /// ======
-        for(int jList = 0; jList < plistPointfList[iList].count(); jList ++)
+        for(int jList = 0; jList < m_pointInformsList[iList].count(); jList ++)
         {
             series[iList].append(plistPointfList[iList][jList].nPointInfom);
-            if(plistPointfList[iList][jList].isZeroCorss)
+            if(m_pointInformsList[iList][jList].isZeroCorss)
             {
                 if(500 > jList)
                 {
@@ -157,7 +174,7 @@ void OBNCalibratonDataChart::setCurrentLogData(QList<QList<PointInform>> plistPo
                 {
                     seriesZero[iList].setBrush(QBrush(m_colorList[iList]));
                 }
-                seriesZero[iList].append(plistPointfList[iList][jList].nPointInfom);
+                seriesZero[iList].append(m_pointInformsList[iList][jList].nPointInfom);
             }
         }
     }

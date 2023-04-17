@@ -134,13 +134,15 @@ QDateTime dataFile2DateTime(QString fnamein, double TC)
     return QDateTime::fromString(Datatime,"yyyy-MM-dd HH:mm:ss.zzz");
 }
 
-//起始时间、结束时间和TC值在Ftpmanager界面管理设置
+/// ====== 起始时间、结束时间和TC值在Ftpmanager界面管理设置
 bool isFileInPeriod(const QString filename)
 {
     QDateTime dateTime = dataFile2DateTime(filename,m_TCValue);
     qDebug()<<"file time:"<<dateTime.toString("yyyy-MM-dd HH:mm:ss");
     if(dateTime>=gFromDateTime && dateTime<=gToDateTime)
+    {
         return true;
+    }
     return false;
 }
 

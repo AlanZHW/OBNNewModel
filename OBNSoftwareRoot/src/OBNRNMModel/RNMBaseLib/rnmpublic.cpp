@@ -34,7 +34,8 @@ bool isNodeIP(const uint &ipV4)
 uint ip2DeviceNo(const uint &ipV4)
 {
     uint temp = ipV4 - startIp;
-    return (temp/256)*2 + ((temp%256)-2);
+//    return (temp/256)*2 + ((temp%256)-2);
+    return (temp/256)*2+(temp%256);
 }
 
 QString workName(const int &work)
@@ -70,6 +71,12 @@ Node::Node(QObject *parent)
     m_ftpManager    = new FtpManager(this);
     m_downloadState = NoDownload;
     m_ftpError      = NoError;
+
+    /// ====== 设定时间为10分钟保存一次当前设备信息
+    mSaveDeviceInformTimer.setInterval(600000);
+    connect(&mSaveDeviceInformTimer, &QTimer::timeout, this, [=](){
+        functionSaveNodeDeviceInform();
+    });
 }
 
 Node::~Node()
@@ -77,6 +84,54 @@ Node::~Node()
     if(m_nodeQuery)
         m_nodeQuery->stop();
     delete[] m_colors;
+}
+
+/// ======
+void Node::startSaveNodeDeviceInform()
+{
+    mSaveDeviceInformTimer.start();
+    /// ====== 启动定时器后先自动存储一次
+    functionSaveNodeDeviceInform();
+}
+void Node::stopSaveNodeDeviceInform()
+{
+    mSaveDeviceInformTimer.stop();
+    /// ====== 退出定时器时,保存一下最新的信息
+    functionSaveNodeDeviceInform();
+}
+void Node::functionSaveNodeDeviceInform()
+{
+    /// ====== 判断路径是否存在,如果路径不存在则创建
+    QString devicefDir  = m_projectInfoNode.ProjectPath + "/data/G" + QString::number(nodeData.no);
+    QDir dir(devicefDir);
+    if(!dir.exists())
+    {
+        dir.mkdir(devicefDir);
+    }
+    QString devicefName = devicefDir + "/node.info";
+    qDebug() << __FILE__ << "\t" << __LINE__ << "\t devicefName = " << devicefName << "\t nodeData.no = " << nodeData.no;
+    FILE *fpDevice = NULL;
+    fpDevice = fopen(devicefName.toStdString().c_str(), "w");
+    if(NULL != fpDevice)
+    {
+        fprintf(fpDevice, "设备编号:G%d\n", nodeData.no);
+        fprintf(fpDevice, "ip:%d\n", nodeData.ip);
+        fprintf(fpDevice, "链接状态:%d\n", nodeData.state);
+        fprintf(fpDevice, "电压:%f\n", nodeData.sVoltage);
+        fprintf(fpDevice, "温度:%f\n", nodeData.sTemper);
+        fprintf(fpDevice, "舱压:%f\n", nodeData.sPress);
+        fprintf(fpDevice, "工作电流:%f\n", nodeData.sEleCurr);
+        fprintf(fpDevice, "充电电压:%f\n", nodeData.sChargeVolt);
+        fprintf(fpDevice, "存储容量:%f\n", nodeData.sMemory);
+        fprintf(fpDevice, "下载进度:%d\n", nodeData.downloadPercent);
+        fprintf(fpDevice, "采样频率:%d\n", nodeData.sampleFrequency);
+        fprintf(fpDevice, "是否下载完成:%d\n", nodeData.downloaded);
+        fprintf(fpDevice, "驯服状态:%d\n", nodeData.tameState);
+        fprintf(fpDevice, "俯仰角:%f\n", nodeData.pitchAngle);
+        fprintf(fpDevice, "翻滚角:%f\n", nodeData.rollAngle);
+        fprintf(fpDevice, "方位角:%f\n", nodeData.azimuthAngle);
+        fclose(fpDevice);
+    }
 }
 
 void Node::startRefresh(const int &interval)
@@ -95,6 +150,7 @@ void Node::refreshState()
     m_nodeQuery->refresh();
 }
 
+/// ======启动原子钟驯服
 void Node::nodeStartAtomicClockTameFunction()
 {
     m_nodeQuery->startAtomicClockTameFunction();
@@ -105,9 +161,9 @@ void Node::nodeEndAtomicClockTameFunction()
     m_nodeQuery->endAtomicClockTameFunction();
 }
 
-void Node::nodeSetDFunction()
+void Node::nodeSetDFunction(const int& index)
 {
-    m_nodeQuery->setDValueFunction();
+    m_nodeQuery->setDValueFunction(index);
 }
 
 void Node::nodeGetDFunction()
@@ -156,6 +212,7 @@ void Node::updateNode(const UpdateCmd &updateCmd)
 
 void Node::startFtpWork(const FtpWork &ftpWk,const QVariant &arg)
 {
+    qDebug() << __FILE__ << "\t" << __LINE__ << __FUNCTION__;
     m_ftpManager->startWork(ftpWk,arg);
 }
 

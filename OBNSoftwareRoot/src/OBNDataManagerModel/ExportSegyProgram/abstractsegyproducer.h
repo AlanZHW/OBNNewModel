@@ -2,9 +2,11 @@
 #define ABSTRACTSEGYPRODUCER_H
 
 #include <QFile>
+#include <QDebug>
 #include <QDateTime>
 
-#include "public.h"
+#include "macro.h"
+#include "publicHostInform.h"
 #include "projectarea.h"
 #include "spsfiles.h"
 //文件最大大小，120M

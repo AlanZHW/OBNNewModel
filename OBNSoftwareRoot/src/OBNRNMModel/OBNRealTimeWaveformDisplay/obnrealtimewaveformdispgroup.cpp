@@ -2,7 +2,7 @@
 #include "ui_obnrealtimewaveformdispgroup.h"
 
 OBNRealTimeWaveformDispGroup::OBNRealTimeWaveformDispGroup(QWidget *parent) :
-    QWidget(parent), m_tcpSocked(NULL),
+    QWidget(parent),
     ui(new Ui::OBNRealTimeWaveformDispGroup)
 {
     ui->setupUi(this);
@@ -12,18 +12,6 @@ OBNRealTimeWaveformDispGroup::OBNRealTimeWaveformDispGroup(QWidget *parent) :
 
 OBNRealTimeWaveformDispGroup::~OBNRealTimeWaveformDispGroup()
 {
-    /// ====== 退出界面时,断开链接
-    if(NULL != m_tcpSocked && m_tcpSocked->state() == QAbstractSocket::SocketState::ConnectedState)
-    {
-        /// ====== 下发退出更新实时波形
-        if(m_currentDispWaveform)
-        {
-            m_tcpSocked->write(realTimeWaveEndCmd, sizeof(realTimeWaveEndCmd));
-        }
-        /// ====== 断开链接
-        m_tcpSocked->disconnectFromHost();
-        m_tcpSocked->waitForDisconnected(1000);
-    }
     delete ui;
 }
 
@@ -31,104 +19,80 @@ OBNRealTimeWaveformDispGroup::~OBNRealTimeWaveformDispGroup()
 void OBNRealTimeWaveformDispGroup::initCurrentWidget()
 {
     nChartX = new OBNChart(this, "X");
-    nChartX->setAxis(tr("X"), 0, 1000, 6, tr("Y"), 0, 100, 3);
+    nChartX->setContentsMargins(0,0,0,0);
+    nChartX->setAxis(tr("X"), 0, 1000, 6, tr("Y"), -100, 100, 3);
 
     nChartY = new OBNChart(this, "Y");
-    nChartY->setAxis(tr("X"), 0, 1000, 6, tr("Y"), 0, 100, 3);
+    nChartY->setContentsMargins(0,0,0,0);
+    nChartY->setAxis(tr("X"), 0, 1000, 6, tr("Y"), -100, 100, 3);
 
     nChartZ = new OBNChart(this, "Z");
-    nChartZ->setAxis(tr("X"), 0, 1000, 6, tr("Y"), 0, 100, 3);
+    nChartZ->setContentsMargins(0,0,0,0);
+    nChartZ->setAxis(tr("X"), 0, 1000, 6, tr("Y"), -100, 100, 3);
 
     nChartH = new OBNChart(this, "H");
-    nChartH->setAxis(tr("X"), 0, 1000, 6, tr("Y"), 0, 100, 3);
+    nChartH->setContentsMargins(0,0,0,0);
+    nChartH->setAxis(tr("X"), 0, 1000, 6, tr("Y"), -100, 100, 3);
 
     QVBoxLayout* mainLayout = new QVBoxLayout;
-    mainLayout->setSizeConstraint(QVBoxLayout::SetMinimumSize);
-    mainLayout->setContentsMargins(1, 1, 1, 1);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setMargin(0);
     mainLayout->addWidget(nChartX);
     mainLayout->addWidget(nChartY);
     mainLayout->addWidget(nChartZ);
     mainLayout->addWidget(nChartH);
-
-    ui->widget->setLayout(mainLayout);
+    this->setLayout(mainLayout);
 }
 
 /// ====== 设置当前显示数据的设备ID
 void OBNRealTimeWaveformDispGroup::setCurrentDeviceID(const QString& pDeviceID, const int& _prot)
 {
-    /// ====== 显示当前链接的设备IP地址
-    ui->groupBox->setTitle(pDeviceID + "  ");
-
-    QHostAddress address;
-    address.setAddress(pDeviceID);
-
-    /// ====== 得到用于通信的套接字
-    if(NULL != m_tcpSocked)
+    m_tcpSocket = new OBNWaveformTcpSocket(pDeviceID, _prot);
+    connect(m_tcpSocket, &OBNWaveformTcpSocket::sig_connect, m_tcpSocket, &OBNWaveformTcpSocket::slot_startConnect, Qt::BlockingQueuedConnection);
+    m_timer = new QTimer;
+    connect(m_timer, &QTimer::timeout,m_tcpSocket, &OBNWaveformTcpSocket::slot_startConnect);
+    connect(m_tcpSocket,SIGNAL(sig_connect(int)),   m_timer,SLOT(start(int)));
+    connect(m_tcpSocket, &OBNWaveformTcpSocket::connected,m_timer,&QTimer::stop);
+    connect(this, &OBNRealTimeWaveformDispGroup::sig_startCollection,       m_tcpSocket, &OBNWaveformTcpSocket::startCollection);
+    connect(this, &OBNRealTimeWaveformDispGroup::sig_exitCollection,        m_tcpSocket, &OBNWaveformTcpSocket::exitCollection);
+    connect(this, &OBNRealTimeWaveformDispGroup::sig_startDisplayWaveform,  m_tcpSocket, &OBNWaveformTcpSocket::startDisplayWaveform);
+    connect(this, &OBNRealTimeWaveformDispGroup::sig_stopDisplayWaceform,   m_tcpSocket, &OBNWaveformTcpSocket::exitDisplayWaveform);
+    /// ======
+    connect(m_tcpSocket, &OBNWaveformTcpSocket::sig_curent_data, this, [=](int _xNum, int _yNum, int _zNum, int _hNum)
     {
-        m_tcpSocked->disconnectFromHost();
-        m_tcpSocked->waitForDisconnected(1000);
-    }
-    m_tcpSocked = new QTcpSocket;
-    m_tcpSocked->connectToHost(address, _prot);
-    m_tcpSocked->waitForConnected(1000);
-
-    //客户端发来数据就会触发readyRead信号
-    connect(m_tcpSocked, &QTcpSocket::readyRead,this,[=]()
-    {
-        QByteArray data = m_tcpSocked->readAll();
-        qDebug() << "data = " << data;
+        nChartX->addData(_xNum);
+        nChartY->addData(_yNum);
+        nChartZ->addData(_zNum);
+        nChartH->addData(_hNum);
     });
+    m_thread = new QThread;
+    m_tcpSocket->moveToThread(m_thread);
+    m_timer->moveToThread(m_thread);
+    m_thread->start();
 }
 
 /// ====== 开始采集
 void OBNRealTimeWaveformDispGroup::startCollection()
 {
-    qDebug() << "开始采集";
-    if(NULL != m_tcpSocked && m_tcpSocked->state() == QAbstractSocket::SocketState::ConnectedState)
-    {
-        m_tcpSocked->write(realTimeWaveStartCollectionCmd, sizeof(realTimeWaveStartCollectionCmd));
-    }
+    emit sig_startCollection();
 }
 
 /// ====== 结束采集
 void OBNRealTimeWaveformDispGroup::exitCollection()
 {
-    qDebug() << "结束采集";
-    if(NULL != m_tcpSocked && m_tcpSocked->state() == QAbstractSocket::SocketState::ConnectedState)
-    {
-        m_tcpSocked->write(realTimeWaveEndCollectionCmd, sizeof(realTimeWaveEndCollectionCmd));
-    }
+    emit sig_exitCollection();
 }
 
 /// ====== 打开实时波形
 void OBNRealTimeWaveformDispGroup::startDisplayWaveform()
 {
-    qDebug() << "打开实时波形";
-    if(m_tcpSocked->state() == QAbstractSocket::SocketState::ConnectedState)
-    {
-        if(!m_currentDispWaveform)
-        {
-            m_currentDispWaveform = true;
-            /// ====== 启动获取实时波形数据
-            m_tcpSocked->write(realTimeWaveStartCmd, sizeof(realTimeWaveStartCmd));
-        }
-    }
+    emit sig_startDisplayWaveform();
 }
 
 /// ====== 关闭实时波形
 void OBNRealTimeWaveformDispGroup::stopDisplayWaveform()
 {
-    qDebug() << "关闭实时波形";
-    if(m_tcpSocked->state() == QAbstractSocket::SocketState::ConnectedState)
-    {
-        if(!m_currentDispWaveform)
-        {
-            return;
-        }
-        m_currentDispWaveform = false;
-        /// ====== 下发退出更新实时波形
-        m_tcpSocked->write(realTimeWaveEndCmd, sizeof(realTimeWaveEndCmd));
-    }
+    emit sig_stopDisplayWaceform();
 }
 
 /// ====== 获取当前X、Y、Z、H相关数据值

@@ -269,11 +269,14 @@ void LineManager::slotDeleteArea(const QString &areaName)
 
     //更新工区列表--------
     m_AreaListDlg->updateAreaList();
-
     if(m_AssignNodeDlg)
+    {
         m_AssignNodeDlg->deleteArea(m_currentArea);
+    }
     if(m_depolySystem)
+    {
         m_depolySystem->deleteArea(m_currentArea);
+    }
 }
 
 void LineManager::slotDepolySysConnected(const bool &connected)

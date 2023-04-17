@@ -17,7 +17,6 @@
 #include <QMouseEvent>
 #include <QSplineSeries>
 #include <QScatterSeries>
-#include "obncalibrationlinecolorwidget.h"
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -43,6 +42,8 @@ public:
     void setCurrentLogData(QList<QList<PointInform>> plistPointfList);
     void setCurveColor(int iCurveNO, QColor pColor);
 
+    /// ====== 设置是否显示当前线
+    void setCurentLienDispState(int, bool);
 protected:
     void mouseDoubleClickEvent(QMouseEvent*);
 
@@ -64,7 +65,8 @@ signals:
         /// ======
         bool isDisplayLineInform;
         QPushButton* pushButton;
-        OBNCalibrationLineColorWidget* m_lineColorWidget;
+
+        QList<QList<PointInform>> m_pointInformsList;
     };
 
     #endif // OBNCALIBRATONDATACHART_H

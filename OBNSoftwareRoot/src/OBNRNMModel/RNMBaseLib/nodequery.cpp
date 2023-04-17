@@ -5,9 +5,11 @@
 
 #define Socket_WaitForConnect_Time 1
 #define TCP_IP_PORT                5000
-
-//最小查询延迟
+/// ====== 最小查询延迟
 #define Max_Query_Delay            30000
+/// ====== 默认30秒查询一次状态信息
+#define  DEFINE_REFRESJ_INTERVAL   30000
+
 
 #include "rnitems.h"
 
@@ -20,11 +22,14 @@ static const char voltCmd[3] = {0x3a,0x01,0x62};
 /// ======获取姿态
 static const char angleCmd[3] = {0x3a,0x01,0x64};
 static const char angleCmd2[3] = {0x3a,0x01,0x6A};
+/// ======查询内存信息
+static const char memoryCmd[3] = {0x3a,0x01,(char)232};
 /// ======标定指令
 static const char startCalibrationCmd[3] = {0x3a,0x01,0x6D};  ///<标定
 static const char endCalibrationCmd[3]   = {0x3a,0x01,0x6E};  ///<取消标定
-/// ======设置D
-static const char setDCMD[5] = {0x3A, 0x02, (char)130, 0x32, 0x00};
+/// ======设置D<50>
+static const char setDCMD50[5] = {0x3A, 0x02, (char)130, 0x32, 0x00};
+static const char setDCMD80[5] = {0x3A, 0x02, (char)130, 0x32, 0x00};
 /// ======获取D
 static const char getDCMD[3] = {0x3A, 0X01, (char)128};
 /// ======开始驯服
@@ -43,14 +48,14 @@ NodeQuery::NodeQuery(Node *owner)
     connect(this, SIGNAL(disconnected()), this, SLOT(slotDisconnected()));
 
     /// ====== 调整获取连接状态模式
-    m_updateConnectTimer.setInterval(10000);
+    m_updateConnectTimer.setInterval(60000);
     connect(&m_updateConnectTimer, &QTimer::timeout, this, [=](){
         getCurrentConnectState();
     });
     m_updateConnectTimer.start();
 
     /// ====== 获取设备信息
-    m_updateDeviceInfoTimer.setInterval(30000);
+    m_updateDeviceInfoTimer.setInterval(DEFINE_REFRESJ_INTERVAL);
     connect(&m_updateDeviceInfoTimer, &QTimer::timeout, this, [=]{
         getCurrentDeviceInform();
     });
@@ -114,6 +119,7 @@ void NodeQuery::getCurrentConnectState()///<获取当前设备连接状态
 
 void NodeQuery::getCurrentDeviceInform()///<获取当前设备信息
 {
+    qDebug() << "查询状态信息";
     if(NULL != m_node && true == m_node->state())
     {
         startQuery();
@@ -142,13 +148,25 @@ void NodeQuery::endNodeQueryCalibrationFunction()
 }
 
 /// ====== 设置D
-void NodeQuery::setDValueFunction()
+void NodeQuery::setDValueFunction(const int& index)
 {
     qDebug() << "设置D";
     if(this->state() == SocketState::ConnectedState)
     {
-        write(setDCMD,sizeof(setDCMD));
-        m_queryStep = QuerySetD;
+        switch(index)
+        {
+        case 0:
+            write(setDCMD50,sizeof(setDCMD50));
+            m_queryStep = QuerySetD;
+            break;
+        case 1:
+            write(setDCMD80,sizeof(setDCMD80));
+            m_queryStep = QuerySetD;
+            break;
+        default:
+            break;
+        }
+
     }
 }
 
@@ -198,59 +216,30 @@ void NodeQuery::endAtomicClockTameFunction()
     }
 }
 
-void NodeQuery::reConnect()
-{
-#if 0
-    QDateTime current_time = QDateTime::currentDateTime();
-    QString StrCurrentTime = current_time.toString("hh:mm:ss");
-    flush();
-    abort();
-    if(state() == QAbstractSocket::UnconnectedState)
-    {
-        this->disconnectFromHost();
-        this->waitForDisconnected(1000);
-        connectToHost(QHostAddress(m_node->ip()),TCP_IP_PORT);
-        if(this->waitForConnected(1000))
-        {
-            qDebug("connected!");
-        }
-    }
-#endif
-}
-
 void NodeQuery::disConnect()
 {
     this->disconnectFromHost();
     m_running = false;
 }
 
+/// ====== 启动查询状态信息
 void NodeQuery::start(const int &interval)
 {
-    m_interval = interval;
-    m_stoped   = false;
-#if 1
-    connectToHost(QHostAddress(m_node->ip()),TCP_IP_PORT);
+    qDebug() << ".................... connect";
+    connectToHost(QHostAddress(m_node->ip()), TCP_IP_PORT);
     this->waitForConnected(1000);
-#else
-    QTcpSocket* nTcp = new QTcpSocket;
-    nTcp->connectToHost(QHostAddress(m_node->ip()),TCP_IP_PORT);
-    if(nTcp->waitForConnected(1000))
-    {
-        if(sizeof(voltCmd) != nTcp->write(voltCmd,sizeof(voltCmd)))
-            qDebug() << __LINE__ << "\t send faile!";
-        else
-            qDebug() << __LINE__ << "\t send success!";
-    }
-#endif
+
+//    m_interval = interval;
+//    m_stoped   = false;
+//    m_updateDeviceInfoTimer.setInterval(m_interval);
+//    m_updateDeviceInfoTimer.start();
 }
 
+/// ====== 停止查询状态信息
 void NodeQuery::stop()
 {
-    m_count = 0;
-    flush();
+    m_updateDeviceInfoTimer.stop();
     m_stoped = true;
-    this->abort();
-    m_running = false;
 }
 
 void NodeQuery::refresh()
@@ -263,22 +252,11 @@ void NodeQuery::refresh()
         /// ====== 当前状态为false的节点,几个周期查询链接一次，降低频率
         if(m_count*m_interval >= Max_Query_Delay)
         {
-            reConnect();
             m_count = 0;
         }
         startQuery();
         return;
     }
-//    else
-//    {
-//        //节点正在运行,可能是通讯中断，需要重新刷新链接启动
-//        if(m_running)
-//        {
-//            m_running = false;
-//            reConnect();
-//            return;
-//        }
-//    }
 }
 
 void NodeQuery::startQuery()
@@ -290,7 +268,7 @@ void NodeQuery::startQuery()
     m_running = true;
     t.start();
     /// ====== 启动查询,从电压-仓温-仓压顺序查询
-    write(voltCmd, sizeof(voltCmd));
+    qDebug() << write(voltCmd, sizeof(voltCmd));
     m_queryStep = QueryVoltage;
 }
 
@@ -322,7 +300,7 @@ qDebug() << "byteArray is:"   << byteArray << "m_queryStep is:" << m_queryStep;
         m_node->setChargeVolt(temp.toFloat()/1000.f);
 
         //查询仓温
-        write(tempCmd,sizeof(tempCmd));
+        qDebug() << write(tempCmd,sizeof(tempCmd));
         m_queryStep = QueryTemp;
         return;
     }
@@ -334,7 +312,7 @@ qDebug() << "byteArray is:"   << byteArray << "m_queryStep is:" << m_queryStep;
         qDebug() << "仓温 = " << temp;
         m_node->setTemperature(temp.toFloat()/10.f);
         //查询仓压
-        write(pressCmd,sizeof(pressCmd));
+        qDebug() << write(pressCmd,sizeof(pressCmd));
         m_queryStep = QueryPressure;
         return;
     }
@@ -345,14 +323,9 @@ qDebug() << "byteArray is:"   << byteArray << "m_queryStep is:" << m_queryStep;
         temp = QString::number(bdata);
         qDebug() << "仓压 = " << temp;
         m_node->setPressure(temp.toFloat()/101325.0f);
-        //结束--------------------------------
-        m_queryStep = NoQuery;
-        m_running = false;
-        //更新显示状态
-        m_node->updateNode(State_Update);
 
-        //查询姿态(俯仰角和翻滚角数据)
-        write(angleCmd,sizeof(angleCmd));
+        /// ====== 查询姿态(俯仰角和翻滚角数据)
+        qDebug() << write(angleCmd,sizeof(angleCmd));
         m_queryStep = QueryAngle1;
         return;
     }
@@ -371,7 +344,7 @@ qDebug() << "byteArray is:"   << byteArray << "m_queryStep is:" << m_queryStep;
         m_node->setRollAngle(temp.toFloat());
 
         //查询姿态(方位角)
-        write(angleCmd2,sizeof(angleCmd2));
+        qDebug() << write(angleCmd2,sizeof(angleCmd2));
         m_queryStep = QueryAngle2;
         return;
     }
@@ -383,7 +356,30 @@ qDebug() << "byteArray is:"   << byteArray << "m_queryStep is:" << m_queryStep;
         qDebug() << "方位角 = " << temp;
         m_node->setAzimuthAngle(temp.toFloat());
 
+
+        qDebug() << write(memoryCmd, sizeof(memoryCmd));
+        m_queryStep = QueryMemoryInform;
+    }
+    if(QueryMemoryInform == m_queryStep)
+    {
+        /// ====== 解析内存信息
+        qDebug() << "解析内存信息";
+        bdata = (byteArray[3]&0xff)|((byteArray[4]&0xff)<<8)|((byteArray[5]&0xff)<<16)|((byteArray[6]&0xff)<<24);
+        temp = QString::number(bdata);
+        qDebug() << "总内存大小 = " << temp;
+
+        bdata = (byteArray[7]&0xff)|((byteArray[8]&0xff)<<8)|((byteArray[9]&0xff)<<16)|((byteArray[10]&0xff)<<24);
+        temp = QString::number(bdata);
+        qDebug() << "剩余内存大小 = " << temp;
+
+        /// ====== 设置当前剩余内存大小
+        //m_node->setMemory(temp.toFloat());
+
+        /// ====== 初始化
         m_queryStep = NoQuery;
+        m_running   = false;
+        /// ====== 更新显示状态
+        m_node->updateNode(State_Update);
     }
     if(QueryGetAtomic == m_queryStep)
     {
@@ -407,7 +403,7 @@ qDebug() << "byteArray is:"   << byteArray << "m_queryStep is:" << m_queryStep;
             }
         }
         QTimer::singleShot(2000, this, [=](){
-            write(getAtomicClock,sizeof(getAtomicClock));
+            qDebug() << write(getAtomicClock,sizeof(getAtomicClock));
         });
     }
     if(StartCalibration == m_queryStep)

@@ -9,31 +9,30 @@ CONFIG += c++11
 
 include(../../../obnsoftwareroot.pri)
 
-TEMPLATE = lib
-#TEMPLATE = app
+#TEMPLATE = lib
+TEMPLATE = app
 TARGET   = obnrealtimewaveformdisp
 DESTDIR  += $$OBN_RUN_PATH
-CONFIG   += plugin  #描述生成单一库文件
+#CONFIG   += plugin  #描述生成单一库文件
 DEFINES += OBNREALTIMEWAVEFORMDISPLAY_LIBRARY
 
 SOURCES += \
     main.cpp \
     obnchart.cpp \
     obnrealtimewaveformdispgroup.cpp \
-    obnrealtimewaveformsetup.cpp \
-    obnrealtimewaveroot.cpp
+    obnrealtimewaveroot.cpp \
+    obnwaveformtcpsocket.cpp
 
 HEADERS += \
     obnchart.h \
     obnrealtimewaveformdispgroup.h \
     obnrealtimewaveformdisplay_global.h \
     obnrealtimewaveformpublic.h \
-    obnrealtimewaveformsetup.h \
-    obnrealtimewaveroot.h
+    obnrealtimewaveroot.h \
+    obnwaveformtcpsocket.h
 
 FORMS += \
     obnrealtimewaveformdispgroup.ui \
-    obnrealtimewaveformsetup.ui \
     obnrealtimewaveroot.ui
 
 INCLUDEPATH += $$OBN_ROOT_PATH/include

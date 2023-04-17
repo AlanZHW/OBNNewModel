@@ -24,8 +24,11 @@ public:
     void setAxisCurrentYName(const QString);
     void setAxisCurrentXName(const QString);
 
-    void setCurrentLogData(QList<QList<QPointF>> plistPointfList);
+    void setCurrentLogData(QList<QList<QPointF>>& plistPointfList);
+    /// ====== 设置曲线颜色
     void setCurveColor(int iCurveNO, QColor pColor);
+    /// ====== 设置是否显示当前曲线
+    void changeLineDisplayState(int _curve_no, bool _state);
 signals:
 
 
@@ -33,10 +36,10 @@ private:
     QChart *qchart;
     QChartView *chartview;
     QSplineSeries *series;
-
     QHBoxLayout *layout;
     QValueAxis *axisX;
     QValueAxis *axisY;
+    QList<QList<QPointF>> m_currentDisplayPoints;
 };
 
 #endif // OBNLOGVISUAILZATIONCHART_H

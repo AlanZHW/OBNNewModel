@@ -14,24 +14,16 @@ class OBNSearchHostsThread : public QThread
     Q_OBJECT
 public:
     explicit OBNSearchHostsThread(QObject *parent = nullptr);
-
-    void setValues(const QVector<uint>& pValues)
-    {
-        m_values = pValues;
-    }
-    void setValue(const uint& pValue)
-    {
-        m_values.append(pValue);
-    }
-
+    void     setValue(uint _values, int _row);
 protected:
     void run();
 
 signals:
-    void signalSearchHostsLinkStatus(const QString&, const int&, bool);
+    void signalSearchHostsLinkStatus(int, bool);
 
 private:
-    QVector<uint> m_values;
+    int  m_row;
+    uint m_value;
 };
 
 #endif // OBNSEARCHHOSTSTHREAD_H

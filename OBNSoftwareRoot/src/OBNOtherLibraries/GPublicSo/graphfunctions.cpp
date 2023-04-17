@@ -9,20 +9,18 @@ DScaleUnit GraphFunctions::makeDeparatedUnit(int pixWidth,int dataNum,int pixLen
     //找到合适的数据间隔
     int   dataCount = 1;//数据间隔从1开始计算
     float pix       =  float(pixWidth)/float(dataNum);
-    while(pix*dataCount<pixLen){
+    while(pix*dataCount<pixLen)
+    {
         if(dataCount+1>dataNum)
             break;
         dataCount++;
     }
     unit.dataCount = dataCount;
     unit.pixCount  = pix*dataCount;
-
     //数据偏移
     unit.dataOffset = dataCount/2;
-
     //像素偏移
     unit.pixOffset  = int(dataCount/2) * pix + pix/2.0f;
-
     return unit;
 }
 
@@ -57,7 +55,8 @@ CScaleUnit GraphFunctions::makeContinuousUnit(float min,float max,int pixWidth,i
     int i=0;
     for(;i<6;i++)
     {
-        if(newCorStep<=c_scale_standard_step[i]){
+        if(newCorStep<=c_scale_standard_step[i])
+        {
             standard_step = c_scale_standard_step[i];
             break;
         }

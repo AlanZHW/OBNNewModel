@@ -6,13 +6,13 @@
 #define Menu_Name_View   "View"
 #define Menu_Name_About  "About"
 
-#define SearchIP_Button_Search  "Search"
-#define SearchIP_Button_Stop    "Stop"
-#define Search_Button_Canceling "Canceling"
+#define SearchIP_Button_Search  "搜索"
+#define SearchIP_Button_Stop    "暂停"
+#define Search_Button_Canceling "取消"
 
 #define SearchIP_Dialog_Width   880
 #define SearchIP_Dialog_height  560
-#define Node_Connected          "Connected"
+#define Node_Connected          "链接状态"
 #define Node_Not_Avaliable      "N/A"
 
 #define Node_Role_IP            Qt::UserRole + 1
@@ -53,14 +53,10 @@ class RNMMenuManager : public QObject
 public:
     RNMMenuManager(QObject *parent = 0);
     void createMenu(QMenuBar *menuBar,RNManager *parent);
-
     void setUpdateStatus(const bool &start);
-
     //状态更新,已经显示节点
     void setDisplayedNode(const bool &display);
-
     void setDisplayFilters(const int &status);
-
 signals:
     void signalUpdateIntervalChanged(const int &interval);
 
@@ -81,10 +77,14 @@ public:
     RNMToolManager(QObject *parent = 0);
     void createToolBar(QToolBar *toolBar,RNManager *parent);
     void setUpdateStatus(const bool &start);
-
     //状态更新,已经显示节点
     void setDisplayedNode(const bool &display);
 
+    /// ====== 获取设置D模式,0表示设置D为50, 1表示设置D为80
+    int getDMode()
+    {
+        return m_setupDComboBox->currentIndex();
+    }
 signals:
     void signalUpdateIntervalChanged(const int &interval);
     void signalStartOrStopUpdate(const bool &start);
@@ -92,6 +92,8 @@ signals:
 
     void signalStartCalibration();  ///< 标定
     void signalEndCalibration();    ///< 取消标定
+    /// ====== 开启、关闭自动存储节点设备信息功能
+    void signalStorageDeviceInformation(bool);
 private slots:
     void slotSetUpdateInterval(const QString &text);
     void slotStartOrStopUpdate();
@@ -99,10 +101,14 @@ private slots:
 
 private:
     QToolBar  *m_toolBar;
-    QAction   *updateAction;
-    bool      m_curentCalibration;
-    QAction   *calibrationAction;
+    QAction   *updateAction;        ///<
+    bool      m_curentCalibration;  ///< 当前是否处于标定状态
+    QAction   *calibrationAction;   ///< 标定Action
+    bool      m_curentOpenStorage;  ///< 当前是否已经开启了自动存储设备信息
+    QAction   *saveDeviceStatus;    ///< 是否开启存储节点状态信息Action
     QString    m_Path;
+    QComboBox* m_setupDComboBox;    ///< 设置D
+    QLineEdit* m_lineEditGetD;      ///< 获取D
     QLineEdit *m_searchEdit;
 };
 

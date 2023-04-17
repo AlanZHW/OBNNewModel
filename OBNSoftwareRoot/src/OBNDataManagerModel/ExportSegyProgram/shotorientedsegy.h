@@ -1,6 +1,7 @@
 #ifndef SHOTORIENTEDSEGY_H
 #define SHOTORIENTEDSEGY_H
 
+#include "segy.h"
 #include "abstractsegyproducer.h"
 
 struct RecvFile

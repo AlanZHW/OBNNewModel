@@ -30,7 +30,6 @@ FtpManager::~FtpManager()
     delete m_nodeFtp;
 }
 
-
 void FtpManager::setTimerInfo(const QString &startTime,const QString &endTime, const QString &SampInterPer)
 {
     emit signalTimerInfo(startTime, endTime, SampInterPer);
@@ -39,10 +38,13 @@ void FtpManager::setTimerInfo(const QString &startTime,const QString &endTime, c
 void FtpManager::startWork(const int &ftpWk,const QVariant &arg)
 {
     if(m_Thread->isRunning())
+    {
         return;
+    }
     m_nodeFtp->setDevInfo(m_node->no(),m_node->ip());
-    //启动子线程工作
+    /// ====== 启动子线程工作
     m_Thread->start();
+    qDebug() << __FILE__ << "\t" << __LINE__ << __FUNCTION__;
     emit signalStartWork(ftpWk,arg);
 }
 

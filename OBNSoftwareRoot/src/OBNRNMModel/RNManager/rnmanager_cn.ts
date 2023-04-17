@@ -30,7 +30,7 @@
     </message>
     <message>
         <location filename="rnmsidebar.cpp" line="108"/>
-        <source>仓压</source>
+        <source>舱压</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -69,7 +69,7 @@
     </message>
     <message>
         <location filename="rnmgrunit.cpp" line="1049"/>
-        <source>仓压</source>
+        <source>舱压</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -132,7 +132,7 @@
     </message>
     <message>
         <location filename="rnmgraphview.cpp" line="286"/>
-        <source>仓压(atm)</source>
+        <source>舱压(atm)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -7,19 +7,25 @@ include(../../../obnsoftwareroot.pri)
 
 CONFIG += c++11
 
-TEMPLATE = lib
+
 TARGET   = obnlowercomputerota
+#TEMPLATE = app
+TEMPLATE = lib
 DESTDIR  += $$OBN_RUN_PATH
 CONFIG   += plugin  #描述生成单一库文件
 DEFINES  += OBNOTA_LIBRARY
 
 SOURCES += \
     main.cpp    \
-    obnlowercumputerota.cpp
+    obnlowercumputerota.cpp \
+    obnotanode.cpp \
+    obnotanodeftp.cpp
 
 HEADERS += \
     obnlowercumputerota.h \
-    obnlowercumputerota_global.h
+    obnlowercumputerota_global.h \
+    obnotanode.h \
+    obnotanodeftp.h
 
 FORMS += \
     obnlowercumputerota.ui

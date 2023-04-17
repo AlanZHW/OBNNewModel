@@ -122,8 +122,7 @@ bool ShotOrientedSegy::openLineSegyFiles(const StaLine &staLine,const int &start
         fileName = QString("ShotLine%1_%2-%3_%4.segy").arg(int(staLine.line),2,10,QChar('0')).arg(start).arg(end).arg(suffixs[i]);
         fileName = m_Parameter.outputPath +Dir_Separator+fileName;
         //qDebug()<<"open "<<fileName;
-        OpenTrace *openTrace = gobs_open_segy_func(fileName.toLatin1().data() ,&mode,m_segyFileHandle->binary3200, m_segyFileHandle->binaryhead
-                                                   ,m_segyFileHandle->segyInfo, &ok);
+        OpenTrace *openTrace = gobs_open_segy_func(fileName.toLatin1().data() ,&mode,m_segyFileHandle->binary3200, m_segyFileHandle->binaryhead,m_segyFileHandle->segyInfo, &ok);
         if(ok!=0)
         {
             m_errString = QString("Open Outputfile %1 failed.").arg(fileName);

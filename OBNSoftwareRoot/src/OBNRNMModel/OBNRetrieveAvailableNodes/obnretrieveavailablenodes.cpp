@@ -13,7 +13,7 @@ extern uint ip2DeviceNo(const uint &ipV4)
 {
     uint temp = ipV4 - startIp;
 //    uint nCurentNO = (temp/256)*100 + ((temp%256)-100);   ///< 从100开始
-    uint nCurentNO = (temp/256)*2 + ((temp%256)-2);         ///< 从2开始
+    uint nCurentNO = (temp/256)*2+(temp%256);///< 从0开始
     return nCurentNO;
 }
 
@@ -48,8 +48,8 @@ ONBRetrieveAvailableNodes::ONBRetrieveAvailableNodes(QWidget *parent)
     ui->lineEditIpStart->setText("192.168.137.100");
     ui->lineEditIpEnd->setText("192.168.137.105");
 
-    n_searchHostsThread = new OBNSearchHostsThread;
-    connect(n_searchHostsThread, &OBNSearchHostsThread::signalSearchHostsLinkStatus, this, &ONBRetrieveAvailableNodes::slotRecvSearchHostsInform);
+//    n_searchHostsThread = new OBNSearchHostsThread;
+//    connect(n_searchHostsThread, &OBNSearchHostsThread::signalSearchHostsLinkStatus, this, &ONBRetrieveAvailableNodes::slotRecvSearchHostsInform);
 }
 
 ONBRetrieveAvailableNodes::~ONBRetrieveAvailableNodes()
@@ -66,9 +66,6 @@ void ONBRetrieveAvailableNodes::slotSearchButtonClicked()
     /// ====== 调用线程，将IP范围发送到线程，筛选能够ping通的IP
     QString fromIP = ui->lineEditIpStart->text();
     QString toIP   = ui->lineEditIpEnd->text();
-
-    qDebug() << "fromIP = " << ui->lineEditIpStart->text();
-    qDebug() << "toIP = "   << ui->lineEditIpEnd->text();
 
     if(fromIP.isEmpty() || toIP.isEmpty())
     {
@@ -88,7 +85,6 @@ void ONBRetrieveAvailableNodes::slotSearchButtonClicked()
 
     quint32 m_startIP =  addr1.toIPv4Address();
     quint32 m_lastIP  =  addr2.toIPv4Address();
-
 
     n_rstInform.clear();
     findNodesFromScope(m_startIP, m_lastIP, n_rstInform);
@@ -111,40 +107,31 @@ void ONBRetrieveAvailableNodes::slotSearchButtonClicked()
     {
         ui->pushButtonOK->setEnabled(true);
     }
+    ui->progressBar->setRange(0, n_rstInform.count());
+    /// ====== 搜索可用节点
+    for(int iList = 0; iList < n_rstInform.count(); iList ++)
+    {
+        OBNSearchHostsThread* n_searchHostsThread = new OBNSearchHostsThread;
+        connect(n_searchHostsThread, &OBNSearchHostsThread::signalSearchHostsLinkStatus, this, &ONBRetrieveAvailableNodes::slotRecvSearchHostsInform);
+        n_searchHostsThread->setValue(n_rstInform[iList], iList);
+        n_searchHostsThread->start();
 
-    OBNSearchHostsThread* n_searchHostsThread = new OBNSearchHostsThread;
-    n_searchHostsThread->setValues(n_rstInform);
-    connect(n_searchHostsThread, &OBNSearchHostsThread::signalSearchHostsLinkStatus, this, &ONBRetrieveAvailableNodes::slotRecvSearchHostsInform);
-    n_searchHostsThread->start();
+    }
 }
 
 /// ====== 接收当前可用的IP
-void ONBRetrieveAvailableNodes::slotRecvSearchHostsInform(const QString& ip, const int& pNumprocess, bool state)
+void ONBRetrieveAvailableNodes::slotRecvSearchHostsInform(const int& _row, bool state)
 {
-    /// zhw debug
-    state = true;
-
-    /// ======
-    ui->progressBar->setValue(pNumprocess);
-
-    /// ======
-    for(int iRow = 0; iRow < ui->tableWidget->rowCount(); iRow ++)
+    n_rstConectNum += 1;
+    ui->progressBar->setValue(n_rstConectNum);
+    if(state)
     {
-        if(0 == ui->tableWidget->item(iRow, 0)->text().compare(ip))
-        {
-            if(state)
-            {
-                m_linkHostsNum += 1;
-                ui->tableWidget->setItem(iRow, 2, new QTableWidgetItem(tr("链接")));
-            }
-            else
-            {
-                ui->tableWidget->setItem(iRow, 2, new QTableWidgetItem(tr("断开")));
-            }
-            break;
-        }
+        ui->tableWidget->setItem(_row, 2, new QTableWidgetItem(tr("链接")));
     }
-    ui->labelNodeIsConnectedDisp->setText(QString::number(m_linkHostsNum));
+    else
+    {
+        ui->tableWidget->setItem(_row, 2, new QTableWidgetItem(tr("断开")));
+    }
 }
 
 
@@ -182,8 +169,7 @@ void ONBRetrieveAvailableNodes::slotOKButtonClicked()
         pHostsState.ip      = ui->tableWidget->item(iRow, 0)->text();
         pHostsState.hostNum = ui->tableWidget->item(iRow, 1)->text();
         pHostsState.state   = ui->tableWidget->item(iRow, 2)->text() == "断开" ? false : true;
-        if(pHostsState.state)
-            m_hostsStateLVector.append(pHostsState);
+        m_hostsStateLVector.append(pHostsState);
     }
     emit signalCurrentHostsSend(m_hostsStateLVector);
     /// ======

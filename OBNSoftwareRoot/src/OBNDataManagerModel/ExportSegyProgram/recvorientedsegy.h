@@ -10,9 +10,8 @@
 #include <QTextStream>
 #include <QStringList>
 
-//#include "FrftProcess.h"//===frft程序使用头文件
-//#include "mclmcr.h"     //===matlab
-
+#include <math.h>
+#include "segy.h"
 #include "ToolsAlgo.h"
 #include "publicfunctions.h"
 
@@ -20,7 +19,7 @@
     #include <Windows.h>
 #endif
 
-#include <QSqlQuery>
+//#include <QSqlQuery>
 
 class ResponseProcessorf;
 class RecvOrientedSegy : public AbstractSegyProducer
@@ -34,8 +33,8 @@ protected:
     bool   finalize();
 
 private:
-    //查询数据文件目录，所有数据设备,从数据库查找其对应接受站点
-    bool getDevicesInfo();
+//    //查询数据文件目录，所有数据设备,从数据库查找其对应接受站点
+//    bool getDevicesInfo();
 
     //申请道内存,数据道内存-----
     bool allocInitMemory();
@@ -93,7 +92,6 @@ private:
     //输出文件
     SegyFileHandles *m_segyFileHandle;
     TraceHead       *m_traceHead;//道头
-
     float           *m_data;     //数据
     QString         m_ACUFileName;
 };

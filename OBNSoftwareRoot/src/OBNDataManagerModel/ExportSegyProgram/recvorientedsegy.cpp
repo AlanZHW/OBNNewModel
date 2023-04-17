@@ -116,18 +116,16 @@ bool RecvOrientedSegy::run()
     for(int iLine = 0; iLine < recvStationInfo->lineNum; iLine ++)
     {
         /// ====== 站点号循环
-        for(int iStation = 0; iStation < recvStationInfo->staLines->staNum; iStation ++)
+        for(int iStation = 0; iStation < recvStationInfo[iLine].staLines->staNum; iStation ++)
         {
             /// ====== 是否投放到站点
-            if(1 > recvStationInfo->staLines->stations->sp)
+            if(1 > recvStationInfo[iLine].staLines->stations[iStation].sp)
             {
                 continue;
             }
             /// ====== 判断线号和站点号是否在当前数据范围内
-            if(recvStationInfo->staLines->stations->line >= m_Parameter.lineScope.first  &&
-               recvStationInfo->staLines->stations->line <= m_Parameter.lineScope.second &&
-               recvStationInfo->staLines->stations->sp   >= m_Parameter.staScope.first   &&
-               recvStationInfo->staLines->stations->sp   >= m_Parameter.staScope.second)
+            if((recvStationInfo[iLine].staLines->stations[iStation].line >= m_Parameter.lineScope.first  && recvStationInfo[iLine].staLines->stations[iStation].line <= m_Parameter.lineScope.second) &&
+               (recvStationInfo[iLine].staLines->stations[iStation].sp   >= m_Parameter.staScope.first   && recvStationInfo[iLine].staLines->stations[iStation].sp   <= m_Parameter.staScope.second))
             {
             }
             else
@@ -138,7 +136,7 @@ bool RecvOrientedSegy::run()
             QString n_deviceName;
             for(int iList = 0; iList < originalSubDirs.count(); iList += 1)
             {
-                if(-1 != originalSubDirs[iList].indexOf(recvStationInfo->staLines->stations->sp))
+                if(-1 != originalSubDirs[iList].indexOf(QString::number(recvStationInfo[iLine].staLines->stations[iStation].sp)))
                 {
                     QStringList n_devicePathList = originalSubDirs[iList].split("/");
                     n_deviceName = n_devicePathList[n_devicePathList.count()-1];
@@ -150,12 +148,12 @@ bool RecvOrientedSegy::run()
             }
             DepolyedDevice *depolyedDev = new DepolyedDevice;
             depolyedDev->device = n_deviceName;
-            depolyedDev->line   = recvStationInfo->staLines->stations->line;
-            depolyedDev->station= recvStationInfo->staLines->stations->sp;
-            depolyedDev->x      = recvStationInfo->staLines->stations->x;
-            depolyedDev->y      = recvStationInfo->staLines->stations->y;
-            depolyedDev->z      = recvStationInfo->staLines->stations->del;
-
+            depolyedDev->line   = recvStationInfo[iLine].staLines->stations[iStation].line;
+            depolyedDev->station= recvStationInfo[iLine].staLines->stations[iStation].sp;
+            depolyedDev->x      = recvStationInfo[iLine].staLines->stations[iStation].x;
+            depolyedDev->y      = recvStationInfo[iLine].staLines->stations[iStation].y;
+            depolyedDev->z      = recvStationInfo[iLine].staLines->stations[iStation].del;
+            depolyedDev->dataFile = n_deviceName;
             depolyedDevices.append(depolyedDev);
         }
     }
@@ -163,6 +161,7 @@ bool RecvOrientedSegy::run()
     /// ====== 没有有效数据
     if(0 == depolyedDevices.count())
     {
+        qDebug() << "没有有效数据";
         return false;
     }
 
@@ -181,6 +180,15 @@ bool RecvOrientedSegy::run()
             qDebug()<<m_errString;
             continue;
         }
+        qDebug() << "TC:" << dataFileInfo->TC;
+        qDebug() << "timeErr:" << dataFileInfo->timeErr;
+        qDebug() << "frequency:" << dataFileInfo->frequency;
+        qDebug() << "NTPS_all:" << dataFileInfo->NTPS_all;
+        qDebug() << "startTime:" << dataFileInfo->startTime;
+        qDebug() << "acuStartTime:" << dataFileInfo->acuStartTime;
+        qDebug() << "dataPath:" << dataFileInfo->dataPath;
+        qDebug() << "acuFileName:" << dataFileInfo->acuFileName;
+        qDebug() << "file num:" << dataFileInfo->fileInfos.count();
         qDebug() << __LINE__ << "\t readDataFileInfo success";
 
         /// ====== 接收点信息
@@ -190,7 +198,6 @@ bool RecvOrientedSegy::run()
         m_traceHead->gelev  = recvStation.elev;
         m_traceHead->tracf  = 1;
         m_traceHead->tracl  = 1;
-
         /// ====== 保存接受点线号，保存在未使用地址段
         m_traceHead->unass[2] = recvStation.line;
         m_traceHead->unass[3] = recvStation.sp;
@@ -215,7 +222,6 @@ bool RecvOrientedSegy::run()
                 closeInputFile(fileInfo);
             }
         }
-
         if(!ok)
         {
             m_errString = QString("Process %1 Error,%2").arg(depolyedDevice->device).arg(m_errString);
@@ -385,6 +391,7 @@ bool RecvOrientedSegy::finalize()
     return m_respProcessor->postProcess();
 }
 
+#if 0
 bool RecvOrientedSegy::getDevicesInfo()
 {
     /// ====== 数据库查询工区所有投放设备信息表
@@ -488,6 +495,7 @@ bool RecvOrientedSegy::getDevicesInfo()
     }
     return true;
 }
+#endif
 
 bool RecvOrientedSegy::resvShotInform()
 {
@@ -596,7 +604,6 @@ bool RecvOrientedSegy::resvShotInform()
         //            shot ++;
         //        }
         //        shotFile.close();
-
         line ++;
     }
     return true;
@@ -738,6 +745,7 @@ DataFileInfo *RecvOrientedSegy::readDataFileInfo(DepolyedDevice *depolyedDevice)
     qDebug() << "******************readTimeErrFile success********************";
     QString errStr;
     //2 从DataFile.lst 截取有效数据文件段列表
+    qDebug() << "...... dataPath = " << dataPath;
     ok = getDataFiles(dataPath, dataFileInfo, &errStr);
     if(!ok)
     {
@@ -751,7 +759,7 @@ DataFileInfo *RecvOrientedSegy::readDataFileInfo(DepolyedDevice *depolyedDevice)
     //2 读取log 文件获取钟差值
     //读取log文件 TC值-----
     ok = readLogFile(dataFileInfo);
-    //qDebug()<<"Tc:"<<QString::number(dataFileInfo->TC,'f',0);
+    qDebug()<<"Tc:"<<QString::number(dataFileInfo->TC,'f',0);
     if(!ok)
     {
         m_errString ="Read "+depolyedDevice->dataFile+" log file failed："+m_errString;
@@ -815,8 +823,8 @@ bool RecvOrientedSegy::readCfgFile(DataFileInfo *dataFileInfo, QString &errorStr
     float     TimeError[2];
     for(int dtCont = 0; dtCont < dataFileInfo->fileInfos.count(); dtCont ++)
     {
-        TimeError[0] = FLT_MAX;
-        TimeError[1] = FLT_MAX;
+        TimeError[0] = __FLT_MAX__;
+        TimeError[1] = __FLT_MAX__;
         for(int iTDt = 1; iTDt <= TimeCount; iTDt ++)
         {
             LeftTimeValue = tmpTimeErr[iTDt-1].TimeValue;
@@ -832,7 +840,7 @@ bool RecvOrientedSegy::readCfgFile(DataFileInfo *dataFileInfo, QString &errorStr
             else
                 continue;
         }
-        if(TimeError[0] == FLT_MAX || TimeError[1] == FLT_MAX)//====当没有得到需要的时差时
+        if(TimeError[0] == __FLT_MAX__ || TimeError[1] == __FLT_MAX__)//====当没有得到需要的时差时
             continue;
 
         //====先对当前两个值(同一个小时内)进行插值，插值成为3600000个值(毫秒)
@@ -1090,10 +1098,13 @@ bool RecvOrientedSegy::getDataFiles(const QString &dataPath,DataFileInfo *dataFi
         }
         FileInfo *fileInfo = new FileInfo;
         fileInfo->fileName = strList[3];
+        fileInfo->fileName.replace("\\", "/");
         //真实的时间
         fileInfo->dateTime = fileTime;
         fileInfo->path     = dataPath;
 
+        QString ncurtfName = dataPath + Dir_Separator +fileInfo->fileName;
+        qDebug() << ">>>>>> ncurtfName = " << ncurtfName;
         fileInfo->exist=QFile(dataPath + Dir_Separator +fileInfo->fileName).exists();
         fileInfos.append(fileInfo);
 
@@ -1304,7 +1315,6 @@ bool RecvOrientedSegy::mainRecvProcess(DataFileInfo *dataFileInfo)
 
         //遍历炮点,默认炮时是递增的
         for(int shot = 0; shot < shotLineTime.staNum; shot ++)
-            //        for(int shot = 0; shot < 1; shot ++)
         {
             //qDebug() << "line = " << line << "\t shot = " << shot;
             //使用以下两个备用字段用作抽取共炮文件使用
@@ -1324,9 +1334,10 @@ bool RecvOrientedSegy::mainRecvProcess(DataFileInfo *dataFileInfo)
                 qDebug() << __LINE__ << "\t 循环到最后一个文件，不再继续";
                 return true;
             }
+
             for(;file_index<fileInfos.size(); file_index ++)
             {
-                //qDebug() << "filename = " << fileInfos[file_index]->fileName << "\t dateTime = " << fileInfos[file_index]->dateTime;
+                qDebug() << "filename = " << fileInfos[file_index]->fileName << "\t dateTime = " << fileInfos[file_index]->dateTime;
                 //判断文件是否存在
                 if(!fileInfos[file_index]->exist)
                 {
@@ -1612,7 +1623,6 @@ bool RecvOrientedSegy::findStation(DepolyedDevice *depolyedDevice,int *lineNo, i
         if(depolyedDevice->line == recvStationInfo->staLines[i].line)
         {
             StaLine staLine = recvStationInfo->staLines[i];
-            qDebug() << "staNum = " << staLine.staNum;
             for(int j = 0; j < staLine.staNum; j ++)
             {
                 qDebug() << "sp = " << staLine.stations[j].sp << "\t station = " << depolyedDevice->station;

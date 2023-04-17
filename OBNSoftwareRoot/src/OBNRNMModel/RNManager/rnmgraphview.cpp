@@ -50,7 +50,6 @@ RNMGraphView::~RNMGraphView()
 void RNMGraphView::setNodes(const QVector<Node*> &nodes)
 {
     m_Nodes = nodes;
-
     //初始化布局显示
     initNodeDisplay(nodes);
 }
@@ -152,6 +151,20 @@ void RNMGraphView::slotRefresh()
     emit updateNodes();
 }
 
+void RNMGraphView::startOrstopSaveDeviceInformTimer(bool _isStart)
+{
+    if(_isStart)
+    {
+        foreach(Node *node, m_Nodes)
+            node->startSaveNodeDeviceInform();
+    }
+    else
+    {
+        foreach(Node *node, m_Nodes)
+            node->stopSaveNodeDeviceInform();
+    }
+}
+
 /// ======原子钟相关
 void RNMGraphView::startAtomicClockTameFunction()   ///< 开始驯服原子钟
 {
@@ -163,10 +176,13 @@ void RNMGraphView::endAtomicClockTameFunction()     ///< 停止驯服原子钟
     foreach(Node *node, m_Nodes)
         node->nodeEndAtomicClockTameFunction();
 }
-void RNMGraphView::setDFunction()                   ///< 设置D
+
+void RNMGraphView::setDFunction(const int& idx)                   ///< 设置D
 {
     foreach(Node *node, m_Nodes)
-        node->nodeSetDFunction();
+    {
+        node->nodeSetDFunction(idx);
+    }
 }
 void RNMGraphView::getDFunction()                   ///< 获取D
 {
@@ -277,13 +293,10 @@ void NodeInfoDlg::initDlg()
     m_tableWidget = new QTableWidget;
     mainLayout->addWidget(m_tableWidget);
 
-    QPushButton* saveButton  = new QPushButton(tr("&保存"),this);
-    connect(saveButton, &QPushButton::clicked, this, &NodeInfoDlg::slotSaveInformFunction);
     QPushButton* closeButton    = new QPushButton(tr("&关闭"),this);
     connect(closeButton,SIGNAL(clicked(bool)),this,SLOT(close()));
 
     QHBoxLayout *hLayout = new QHBoxLayout;
-    hLayout->addWidget(saveButton);
     hLayout->addStretch(1);
     hLayout->addWidget(closeButton);
     mainLayout->addLayout(hLayout);
@@ -313,10 +326,10 @@ void NodeInfoDlg::showNodeInfo(const Node *node)
     m_tableWidget->setItem(2, 0, new QTableWidgetItem(tr("电压(V)")));
     m_tableWidget->setItem(2, 1, new QTableWidgetItem(QString("%1").arg(node->voltage())));
 
-    m_tableWidget->setItem(3, 0, new QTableWidgetItem(QStringLiteral("仓温(℃)")));
+    m_tableWidget->setItem(3, 0, new QTableWidgetItem(QStringLiteral("舱温(℃)")));
     m_tableWidget->setItem(3, 1, new QTableWidgetItem(QString("%1").arg(node->temperature())));
 
-    m_tableWidget->setItem(4, 0, new QTableWidgetItem(tr("仓压(atm)")));
+    m_tableWidget->setItem(4, 0, new QTableWidgetItem(tr("舱压(atm)")));
     m_tableWidget->setItem(4, 1, new QTableWidgetItem(QString("%1").arg(node->pressure(),0,'g',3)));
 
     m_tableWidget->setItem(5, 0, new QTableWidgetItem(QStringLiteral("俯仰角(℃)")));
@@ -333,12 +346,6 @@ void NodeInfoDlg::showNodeInfo(const Node *node)
     /// ====== 显示
     this->show();
 }
-
-void NodeInfoDlg::slotSaveInformFunction(bool)
-{
-
-}
-
 
 
 

@@ -9,7 +9,7 @@ OBNSoftwareMain::OBNSoftwareMain() :
 
 void OBNSoftwareMain::initOBNSoftwareFunction()
 {
-#if 0
+#if 1
     if(NULL == m_obnWelcome)
     {
         m_obnWelcome = new OBNWelcomeToTheInterface;

@@ -5,6 +5,7 @@
 
 typedef struct {
     QString ip;
+    QString hostName;
     int     port;
 }TCPInform;
 

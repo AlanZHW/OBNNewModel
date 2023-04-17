@@ -31,17 +31,16 @@ public slots:
     void slotResetButtonClicked();
 
     /// ====== 接收当前筛选进度
-    void slotRecvSearchHostsInform(const QString&, const int&, bool);
+    void slotRecvSearchHostsInform(const int&, bool);
 
 signals:
     void signalCurrentHostsSend(QVector<HostsState>);
 
 private:
     int           m_linkHostsNum;
+    int           n_rstConectNum;
     QVector<uint> n_rstInform;
-    OBNSearchHostsThread* n_searchHostsThread;
     QVector<HostsState>   m_hostsStateLVector;
-
     Ui::ONBRetrieveAvailableNodes *ui;
 };
 #endif // OBNRETRIEVEAVAILABLENODES_H

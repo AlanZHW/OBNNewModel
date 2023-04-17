@@ -32,30 +32,18 @@ public:
 
 private slots:
     void on_dataPathBrwser_clicked();
-
     void on_outputPathBrwser_clicked();
-
-    //开始运行抽取道集
+    /// ====== 开始运行抽取道集
     void on_startBtn_clicked();
-
     void on_CloseBtn_clicked();
-
     void on_ShotLineBrwser_clicked();
-
     void on_areasCbx_currentIndexChanged(const QString &arg1);
-
     void on_recvRbtn_clicked(bool checked);
-
     void on_shotRbtn_clicked(bool checked);
-
     void on_fromLineSpx_valueChanged(int arg1);
-
     void on_toLineSpx_valueChanged(int arg1);
-
     void on_fromStaSpx_valueChanged(int arg1);
-
     void on_toStaSpx_valueChanged(int arg1);
-
 private:
     /// ====== 根据当前项目初始化
     void initByProject();

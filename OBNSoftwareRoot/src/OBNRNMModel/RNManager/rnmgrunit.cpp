@@ -75,7 +75,7 @@ void RNMMenuManager::createMenu(QMenuBar *menuBar, RNManager *rmnodemanager)
     m_btnGroup->addButton(timeBtn3);
     m_btnGroup->addButton(timeBtn4);
     m_btnGroup->addButton(timeBtn5);
-    timeBtn2->setChecked(true);
+    timeBtn1->setChecked(true);
     update_starus_interval->setLayout(btnLayout);
     m_btnGroup->setExclusive(true);
     connect(m_btnGroup,SIGNAL(buttonClicked(QAbstractButton*)),this,SLOT(slotUpdateIntervalChanged(QAbstractButton*)));
@@ -185,28 +185,38 @@ void RNMMenuManager::setDisplayFilters(const int &status)
     filtersGroupBox->button(status)->setChecked(true);
 }
 
+/// ====== 设置查询状态信息时间
 void RNMMenuManager::slotUpdateIntervalChanged(QAbstractButton *btn)
 {
-    //    qDebug()<<"update interVal:"<<btn->text();
     QString text = btn->text();
     int interval = 1000;
     if(text == Update_Interval_3)
+    {
         interval*=3;
+    }
     else if(text == Update_Interval_5)
+    {
         interval*=5;
+    }
     else if(text == Update_Interval_10)
+    {
         interval*=10;
+    }
     else if(text == Update_Interval_20)
+    {
         interval*=20;
+    }
     else if(text == Update_Interval_30)
+    {
         interval*=30;
+    }
     emit signalUpdateIntervalChanged(interval);
 }
 
 
 //--------------------------
 RNMToolManager::RNMToolManager(QObject *parent)
-    :QObject(parent), m_curentCalibration(false)
+    :QObject(parent), m_curentCalibration(false), m_curentOpenStorage(false)
 {
     m_Path = QCoreApplication::applicationDirPath();
 }
@@ -215,27 +225,43 @@ void RNMToolManager::createToolBar(QToolBar *toolBar,RNManager *rmnodemanager)
 {
     //文件目录-------------
     m_toolBar = toolBar;
-    //set search Ip Scope
+    /// ====== 设置搜索IP范围
     toolBar->addAction(QIcon(m_Path+"/Image/search.png"),tr("设置搜索IP范围"),rmnodemanager,SLOT(slotSetSearchIpScope()));    /// Set Search IP Scope
     toolBar->addSeparator();
 
-    updateAction = new QAction(QIcon(m_Path+"/Image/start.png"), tr("启动更新"), toolBar);
-    updateAction->setData(false);
+    /// ====== 启动更新
+    updateAction = new QAction(QIcon(m_Path+"/Image/stop.png"), tr("启动更新"), toolBar);
+    updateAction->setData(true);
     connect(updateAction,SIGNAL(triggered(bool)),this,SLOT(slotStartOrStopUpdate()));
     connect(this,SIGNAL(signalStartOrStopUpdate(bool)),rmnodemanager,SLOT(slotStartStopUpdate(bool)));
     toolBar->addAction(updateAction);
+    toolBar->addSeparator();
 
-    //down load and storage manager
+    /// ====== 下载&存储管理器
     toolBar->addAction(QIcon(m_Path+"/Image/data_manager.png"), tr("下载&存储管理器"),rmnodemanager, SLOT(slotNodeFtpManager()));  /// DownLoad & Storage Manager
-    //status report
+    /// ====== 状态报告
     toolBar->addAction(QIcon(m_Path+"/Image/list_item.png"), tr("状态报告"),rmnodemanager, SLOT(slotShowStatusReport()));   ///< Status Report
     toolBar->addSeparator();
-    toolBar->addAction(QIcon(m_Path+"/Image/start.png"),    tr("开始原子钟驯服"), rmnodemanager, SLOT(slotAtomicClockTame()));
-    toolBar->addAction(QIcon(m_Path+"/Image/settings.png"), tr("设置D"),        rmnodemanager, SLOT(slotSetD()));
+
+    /// ====== 原子钟驯服
     toolBar->addAction(QIcon(m_Path+"/Image/search.png"),   tr("获取D"),        rmnodemanager, SLOT(slotGetD()));
+    m_lineEditGetD = new QLineEdit;
+    m_lineEditGetD->setMaximumHeight(25);
+    m_lineEditGetD->setMinimumWidth(100);
+    m_lineEditGetD->setMaximumWidth(100);
+    m_lineEditGetD->setReadOnly(true);
+    toolBar->addWidget(m_lineEditGetD);
+
+    toolBar->addAction(QIcon(m_Path+"/Image/settings.png"), tr("设置D"),        rmnodemanager, SLOT(slotSetD()));
+    m_setupDComboBox = new QComboBox;
+    m_setupDComboBox->setMinimumWidth(100);
+    m_setupDComboBox->addItem("50");
+    m_setupDComboBox->addItem("80");
+    toolBar->addWidget(m_setupDComboBox);
+    toolBar->addAction(QIcon(m_Path+"/Image/start.png"),    tr("开始原子钟驯服"), rmnodemanager, SLOT(slotAtomicClockTame()));
     toolBar->addSeparator();
 
-    /// ====== 标定相关
+    /// ====== 标定
     calibrationAction = new QAction(QIcon(m_Path+"/Image/start.png"), tr("标定"), toolBar);
     connect(calibrationAction, &QAction::triggered, this, [=](const bool){
         if(!m_curentCalibration)
@@ -254,6 +280,26 @@ void RNMToolManager::createToolBar(QToolBar *toolBar,RNManager *rmnodemanager)
     toolBar->addAction(calibrationAction);
     toolBar->addSeparator();
 
+    /// ====== 开启/关闭 自动存储设备状态信息
+    saveDeviceStatus = new QAction(QIcon(m_Path+"/Image/start.png"), tr("开启/关闭 自动存储设备状态信息"), toolBar);
+    connect(saveDeviceStatus, &QAction::triggered, this, [=](const bool){
+        if(!m_curentOpenStorage)
+        {
+            m_curentOpenStorage = true;
+            saveDeviceStatus->setIcon(QIcon(m_Path+ICON_STOP));
+            emit signalStorageDeviceInformation(true);
+        }
+        else
+        {
+            m_curentOpenStorage = false;
+            saveDeviceStatus->setIcon(QIcon(m_Path+ICON_START));
+            emit signalStorageDeviceInformation(false);
+        }
+    });
+    toolBar->addAction(saveDeviceStatus);
+    toolBar->addSeparator();
+
+    /// ======
     QLabel *devNoLbl = new QLabel("Serial.No:");
     m_searchEdit = new QLineEdit("G");
     m_searchEdit->setInputMask("G000; ");
@@ -309,6 +355,7 @@ void RNMToolManager::slotSetUpdateInterval(const QString &text)
 
     emit signalUpdateIntervalChanged(interval);
 }
+
 void RNMToolManager::slotSearchNode()
 {
     uint dev_no = m_searchEdit->text().mid(1).toUInt();
@@ -336,7 +383,7 @@ void RNMToolManager::slotStartOrStopUpdate()
 SearchIpDialog::SearchIpDialog(QWidget *parent)
     :QDialog(parent)
 {
-    this->setWindowTitle(tr("Search Hosts"));
+    this->setWindowTitle(tr("搜索节点"));
     this->setWindowFlags(this->windowFlags() | Qt::WindowMinMaxButtonsHint);
 
     initDlg();
@@ -677,7 +724,9 @@ void SearchIpDialog::stopSearch()
     qApp->setOverrideCursor(Qt::WaitCursor);
 
     foreach(SearchThread *thread,m_threads.values())
+    {
         thread->stop();
+    }
     while(m_threads.size()>0)
     {
         qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
@@ -1090,7 +1139,7 @@ void LimitsDialog::initDlg()
     temperBox->setValidator(validator);
 
     //Pressure
-    LimitGroupBox *PressureBox = new LimitGroupBox(tr("仓压"),this);  ///< Pressure
+    LimitGroupBox *PressureBox = new LimitGroupBox(tr("舱压"),this);  ///< Pressure
     limit.color     = QColor(Qt::yellow);
     limit.operation = Big;
     limit.value     = 0.90;

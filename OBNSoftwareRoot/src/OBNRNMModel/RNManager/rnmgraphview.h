@@ -40,10 +40,12 @@ public:
     /// ======原子钟相关
     void startAtomicClockTameFunction();
     void endAtomicClockTameFunction();
-    void setDFunction();
+    void setDFunction(const int&);
     void getDFunction();
     /// ====== 标定
     void calibrationFunction(const bool);
+    /// ====== 开启和关闭保存设备信息定时器
+    void startOrstopSaveDeviceInformTimer(bool);
 signals:
     void updateNodes();
 protected:
@@ -67,6 +69,7 @@ private:
     int                      m_updateInterval;//刷新间隔
     StatisticsData          *m_statisticsData;
     NodeInfoDlg             *m_NodeInfoDlg;
+    ProjectInfo             m_projectInform;
 };
 
 
@@ -76,8 +79,6 @@ class NodeInfoDlg : public QDialog
 public:
     NodeInfoDlg(QWidget *parent = 0);
     void showNodeInfo(const Node *node);
-public slots:
-    void slotSaveInformFunction(bool);
 private:
     void          initDlg();
     QTableWidget* m_tableWidget;

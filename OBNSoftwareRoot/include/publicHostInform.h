@@ -524,9 +524,9 @@ typedef enum
 }OpenFilesType;
 
 typedef struct{
-    QString ip;
-    QString hostNum;
-    bool    state;
+    QString ip;     ///<
+    QString hostNum;///<
+    bool    state;  ///<
 }HostsState;
 /// ===============
 

@@ -6,8 +6,10 @@
 #include <QDebug>
 #include <QChartView>
 #include <QValueAxis>
+#include <QCategoryAxis>
 #include <QSplineSeries>
 #include <QHBoxLayout>
+#include <QOpenGLWidget>
 
 QT_CHARTS_USE_NAMESPACE
 class OBNChart : public QWidget
@@ -35,6 +37,7 @@ private:
     QHBoxLayout *layout;
     QValueAxis *axisX;
     QValueAxis *axisY;
+    QCategoryAxis *axisInfo;
     QString chartname;
     /// ====== 坐标轴参数
     QString xname;
@@ -45,6 +48,11 @@ private:
     int ymin;
     int ymax;
     int ytickc;
+    bool isDisplayLine2 = false;
+
+    int m_currentDisplayPointNumb = 2000;
+
+    QVector<QPointF> temp200;
 };
 
 #endif // OBNCHART_H

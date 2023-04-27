@@ -240,7 +240,6 @@ void GSerialPort::initWg()
         if("USB Serial Port" == portInfos[i].description())
             defaultIdx = i;
     }
-
     //设置参数默认值
     ui->SerialNumCbx->setCurrentIndex(defaultIdx);
     ui->dataBitCbx->setCurrentIndex(3);

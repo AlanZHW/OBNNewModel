@@ -36,10 +36,24 @@ public:
     OBNLowerCumputerOTA(QWidget *parent = nullptr);
     ~OBNLowerCumputerOTA();
     void setCurrentOptionalInform(const QVector<HostsState>&);
-
     /// ======升级选项修改
     void otaOptionIndexChange(const int&);
 
+    /// ====== 开始执行配置文件修改工作
+    void startChangeConfigFileFunction();       ///<
+    void getCurentChangeIDAlsoGetConfigFile();  ///<
+    void readCurrentConfigFileFunction(int, const QString&);
+    /// ====== 读取配置文件内容
+    void readConfigInformFunction(const QString& _configName, QList<CFGInform>& _configInformList);
+    /// ====== 修改文件内容并存储到磁盘
+    void updateCurrentConfigFileFunction(const QString& _uploadFName, QList<CFGInform>& _configInformList);
+    /// ====== 上传新的配置文件
+    void putCurrentConfigFileFunction(const int _row, const QString& n_uploadfName, const QString& _nodefName);
+    /// ======
+    void initConfigTableInfrom(int row, const QString& _configfName);
+
+    /// ====== 上传升级文件
+    void putUpgradeFilesFunctio(const QString& _otaFileName, const QString &_nodefName);
 signals:
     void sig_startWork();   ///< 开始升级
 
@@ -54,6 +68,8 @@ private slots:
     void slotPutOTAFileSuccess(int);
     /// ======
     void slotCurrentProgress(int, int);
+    /// ======
+    void slotNodeTableCheckBoxStateChange(int);
 private:
     QString m_fileName;
     QString m_connectedStyle, m_disConnectedStyle;
@@ -69,6 +85,12 @@ private:
     QString m_curentHostConfigFileName;
     /// ======
     QString m_hostPath;
+    bool    m_startUpload;
+    QList<int> m_curentSelectedNodeList;    ///< 当前选中的节点列表
+
+    /// ======
+    QString m_currentFileName, m_curentNodefName;
+
     Ui::OBNLowerCumputerOTA *ui;
 };
 #endif // OBNLOWERCUMPUTEROTA_H

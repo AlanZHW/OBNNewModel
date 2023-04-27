@@ -7,10 +7,10 @@ include(../../../obnsoftwareroot.pri)
 CONFIG += c++11
 
 TARGET   = OBNExportSEGY
-TEMPLATE = app
-#TEMPLATE = lib
-#DESTDIR  += $$OBN_RUN_PATH
-#CONFIG   += plugin  #描述生成单一库文件
+#TEMPLATE = app
+TEMPLATE = lib
+DESTDIR  += $$OBN_RUN_PATH
+CONFIG   += plugin  #描述生成单一库文件
 
 DEFINES += OBNEXPORTSEGY_LIBRARY
 

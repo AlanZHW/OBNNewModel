@@ -30,7 +30,6 @@ private:
 
 public slots:
     void slot_startConnect();   ///<
-
     /// ======
     void startCollection();
     void exitCollection();

@@ -74,8 +74,10 @@ OBNMainWindow::OBNMainWindow(QWidget *parent) :
     m_labelStatubar = new QLabel;
     ui->statusbar->addPermanentWidget(m_labelStatubar);
 
+
     /// ====== 初始化界面
     initWindow();
+#if 0
     ui->treeView_DataList->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->treeView_DataList->setEditTriggers(QTreeView::NoEditTriggers);
     ui->treeView_DataList->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -85,17 +87,17 @@ OBNMainWindow::OBNMainWindow(QWidget *parent) :
     /// ======
     ui->treeView_DataList->header()->hide();
     displayDataList();
-
+#endif
     /// ======
     QGraphicsDropShadowEffect *shadow_effect = new QGraphicsDropShadowEffect(this);
     shadow_effect->setOffset(0, 0);
     shadow_effect->setColor(QColor(38, 78, 119, 127));
     shadow_effect->setBlurRadius(22);
     ui->tabWidget->setGraphicsEffect(shadow_effect);
-    /// ======
-    connect(ui->tabWidget, &QTabWidget::currentChanged, this, [=](int){
-        displayDataList();
-    });
+//    /// ======
+//    connect(ui->tabWidget, &QTabWidget::currentChanged, this, [=](int){
+//        displayDataList();
+//    });
     /// ====== 设置软件风格
     QString nQSSInform;
     QFile qssFile(":qss/defaultStyle.qss");
@@ -112,6 +114,7 @@ OBNMainWindow::~OBNMainWindow()
     delete ui;
 }
 
+#if 0
 void OBNMainWindow::displayDataList()
 {
     switch(ui->tabWidget->currentIndex())
@@ -129,7 +132,7 @@ void OBNMainWindow::displayDataList()
         return;
     }
 }
-
+#endif
 
 void OBNMainWindow::setCurrentProjectInfrom(const QString& _projectName, const QString& _projectPath)
 {
@@ -146,7 +149,7 @@ void OBNMainWindow::setCurrentProjectInfrom(const QString& _projectName, const Q
     setWindowTitle(n_currentWindowTitle);
 
     /// ====== 初始化侧边栏
-    initDataListInfoFunction();
+    /// initDataListInfoFunction();
 }
 
 void OBNMainWindow::paintEvent(QPaintEvent*)
@@ -174,6 +177,8 @@ void OBNMainWindow::slotRefreshTableEnd(QString pFunc, QString Time)
     /// showDataInfoListSeismicData();
 }
 
+#if 0
+
 void OBNMainWindow::initDataListInfoFunction()
 {
 #if 1
@@ -194,6 +199,7 @@ void OBNMainWindow::initDataListInfoFunction()
     }
     /// ====== 获取当前工区测边栏需要显示的内容
     showDataInfoListFunction();
+
     /// ======
     ui->treeView_DataList->setModel(m_dataItems);
     ui->treeView_DataList->expandAll();
@@ -270,6 +276,7 @@ void OBNMainWindow::showDataInfoListFunction()
         }
     }
 }
+#endif
 
 /// ====== QToolButton相关按钮槽函数
 /// ====== 新建观测系统
@@ -578,7 +585,7 @@ void OBNMainWindow::showDataInfoListLoggingData()
     }
     nPathNameList.clear();
 }
-#endif
+
 
 /// 数据列表单击槽函数
 void OBNMainWindow::slotClickedDataList(const QModelIndex& index)
@@ -591,66 +598,14 @@ void OBNMainWindow::slotRefushSidebarList()
     showDataInfoListFunction();
 }
 
+
 void OBNMainWindow::slotCustomContextDataMenuFunc(QPoint point)
 {
     QModelIndex index = ui->treeView_DataList->indexAt(point);
     QVariant var;
     var = index.data(DATA_MARK_FOLDER_SEC);
-#if 0
-    if(var.isValid())
-    {
-        if(MARK_ITEM_SEISMIC == var.toInt())
-        {
-            m_currDataName = index.data(ROLE_MARK_DATA_NAME).toString();
-
-            QMenu* seismicMenu = new QMenu();
-            seismicMenu->exec(QCursor::pos());
-            seismicMenu->clear();
-        }
-        if(MARK_ITEM_POSTSTAKE == var.toInt())
-        {
-            qDebug() << ("叠后数据");
-            QMenu* postStackMenu = new QMenu();
-            postStackMenu->exec(QCursor::pos());
-            postStackMenu->clear();
-        }
-        if(MARK_ITEM_VELOCITY == var.toInt())
-        {
-            QMenu* postVelocityMenu = new QMenu();
-            postVelocityMenu->exec(QCursor::pos());
-            postVelocityMenu->clear();
-        }
-        if(MARK_ITEM_HORIZON == var.toInt())
-        {
-            qDebug() << ("层位数据");
-            QMenu* horizonMenu = new QMenu();
-            horizonMenu->exec(QCursor::pos());
-            horizonMenu->clear();
-        }
-        if(MARK_ITEM_HORIZON_DATA == var.toInt())
-        {
-            QMenu* horizonMenu = new QMenu();
-            horizonMenu->exec(QCursor::pos());
-            horizonMenu->clear();
-        }
-        if(MARK_ITEM_LOGGING_NAME == var.toInt())
-        {
-            qDebug() << ("井名");
-
-            QMenu* loggingMenu = new QMenu();
-            loggingMenu->addAction(("新建井"), this, SLOT(slotNewLogging()));
-            loggingMenu->exec(QCursor::pos());
-            loggingMenu->clear();
-        }
-        if(MARK_ITEM_SPEC_NAME == var.toInt())
-        {
-            QMenu* logNameMenu = new QMenu();
-            logNameMenu->exec(QCursor::pos());
-            logNameMenu->clear();
-        }
-    }
-#endif
 }
+#endif
 
 void OBNMainWindow::initWindow()
 {
@@ -715,6 +670,7 @@ void OBNMainWindow::initWindow()
     /// ======
     this->setFocusPolicy(Qt::StrongFocus);
 }
+
 
 /// ====== 设置QToolButton属性
 void OBNMainWindow::setToolButtonStyleSheet(QToolButton* pToolButton)
@@ -904,9 +860,9 @@ void OBNMainWindow::slotDisplayData(bool)
     m_processDisplay->start(nDisplayModuleName, argvList);
 #endif
 }
-#endif
 
 void OBNMainWindow::slotRefreshDataList()
 {
     showDataInfoListFunction();
 }
+#endif

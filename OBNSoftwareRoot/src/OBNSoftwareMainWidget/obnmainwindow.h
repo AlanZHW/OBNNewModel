@@ -108,12 +108,12 @@ public:
     void setToolButtonStyleSheet(QToolButton* pToolButton);
     void setToolButtonIconInfo(QToolButton* pToolButton);
 
-    void initDataListInfoFunction();
-    void showDataInfoListFunction();/// 显示数据列表信息
+//    void initDataListInfoFunction();
+//    void showDataInfoListFunction();/// 显示数据列表信息
 
     void setCurrentProjectInfrom(const QString&, const QString&);
-public slots:
-    void slotRefreshDataList();
+//public slots:
+//    void slotRefreshDataList();
 
 private slots:
     /// ======
@@ -137,16 +137,16 @@ private slots:
     void slotJobAnalysis(bool);     ///< 作业分析
 
     void slotOpenHelpPrograme(bool);///< 帮助文档
-    void slotRefushSidebarList();   ///< 刷新侧边栏
-    void slotClickedDataList(const QModelIndex& index);
-    void slotCustomContextDataMenuFunc(QPoint point);
+//    void slotRefushSidebarList();   ///< 刷新侧边栏
+//    void slotClickedDataList(const QModelIndex& index);
+//    void slotCustomContextDataMenuFunc(QPoint point);
     ///
     void slotRefreshTableStart(QString, QString);
     void slotRefreshTableEnd(QString, QString);
 
 private:
     void initWindow();
-    void displayDataList();
+//    void displayDataList();
 protected:
     void paintEvent(QPaintEvent*);
 

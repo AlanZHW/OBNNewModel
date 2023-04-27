@@ -68,20 +68,17 @@ void OBNRealTimeWaveRoot::initWindow()
         if(!m_curentCollecting)
         {
             m_curentCollecting = true;
-            for(int iList = 0; iList < m_waveDispGroup.count(); iList ++)
-            {
-                m_waveDispGroup[iList]->startCollection();
-            }
+            int currentIdx = ui->tabWidget->currentIndex();
+            m_waveDispGroup[currentIdx]->startCollection();
+
             m_actionStartCollection->setIcon(QIcon(m_Path+"/Image/stop.png"));
             m_actionStartDispWaveform->setEnabled(true);
         }
         else
         {
             m_curentCollecting = false;
-            for(int iList = 0; iList < m_waveDispGroup.count(); iList ++)
-            {
-                m_waveDispGroup[iList]->exitCollection();
-            }
+            int currentIdx = ui->tabWidget->currentIndex();
+            m_waveDispGroup[currentIdx]->exitCollection();
             m_actionStartCollection->setIcon(QIcon(m_Path+"/Image/start.png"));
             m_actionStartDispWaveform->setEnabled(false);
         }
@@ -96,19 +93,15 @@ void OBNRealTimeWaveRoot::initWindow()
         if(m_curentDispWaveform)
         {
             m_curentDispWaveform = false;
-            for(int iList = 0; iList < m_waveDispGroup.count(); iList ++)
-            {
-                m_waveDispGroup[iList]->stopDisplayWaveform();
-            }
+            int currentIdx = ui->tabWidget->currentIndex();
+            m_waveDispGroup[currentIdx]->stopDisplayWaveform();
             m_actionStartDispWaveform->setIcon(QIcon(m_Path+"/Image/start.png"));
         }
         else
         {
             m_curentDispWaveform = true;
-            for(int iList = 0; iList < m_waveDispGroup.count(); iList ++)
-            {
-                m_waveDispGroup[iList]->startDisplayWaveform();
-            }
+            int currentIdx = ui->tabWidget->currentIndex();
+            m_waveDispGroup[currentIdx]->startDisplayWaveform();
             m_actionStartDispWaveform->setIcon(QIcon(m_Path+"/Image/stop.png"));
         }
     });
@@ -162,6 +155,7 @@ void OBNRealTimeWaveRoot::slotChangeCheckBoxState(const int& index)
             if(hostName == ui->tabWidget->tabText(iTab))
             {
                 ui->tabWidget->removeTab(iTab);
+                m_waveDispGroup.removeAt(iTab);
             }
         }
     }
@@ -176,6 +170,7 @@ void OBNRealTimeWaveRoot::slotChangeCheckBoxState(const int& index)
                 nWaveformDisp->setCurrentDeviceID(m_curentHostTCPInform[iRow].ip, m_curentHostTCPInform[iRow].port);
                 /// ====== 加载节点到图像显示区域
                 ui->tabWidget->addTab(nWaveformDisp, m_curentHostTCPInform[iRow].hostName);
+                m_waveDispGroup.append(nWaveformDisp);
             }
         }
     }

@@ -8,10 +8,13 @@ OBNChart::OBNChart(QWidget* parent, QString _chartname): m_curentDataNum(0)
 
     /// ======
     series = new QSplineSeries(this);
-    series->setPen(QPen(Qt::red,1,Qt::SolidLine));
+    series->setPen(QPen(Qt::yellow,1,Qt::SolidLine));
+    series->setUseOpenGL(true);
 
     /// ======
     qchart = new QChart;
+    qchart->setTheme(QChart::ChartTheme::ChartThemeDark);
+//    qchart->setFont(QFont("宋体"));
     qchart->setTitle(chartname);
     qchart->setContentsMargins(0,0,0,0);
     qchart->setMargins(QMargins(0,0,0,0));
@@ -28,6 +31,7 @@ OBNChart::OBNChart(QWidget* parent, QString _chartname): m_curentDataNum(0)
 
     axisX    = new QValueAxis(this);
     axisY    = new QValueAxis(this);
+    axisInfo = new QCategoryAxis;
 
     /// ======在ui里面添加了一个Widget并把曲线图添加进去
     layout->addWidget(chartview);
@@ -60,6 +64,7 @@ void OBNChart::setAxis(QString _xname, qreal _xmin, qreal _xmax, int _xtickc, QS
     axisX->setGridLineVisible(true);   //网格线可见
     axisX->setTickCount(xtickc);       //设置多少个大格
     axisX->setMinorTickCount(1);   //设置每个大格里面小刻度线的数目
+    axisX->setLabelsFont(QFont("宋体"));
     axisX->setTitleText(xname);  //设置描述
 
     axisY->setRange(ymin, ymax);
@@ -67,38 +72,107 @@ void OBNChart::setAxis(QString _xname, qreal _xmin, qreal _xmax, int _xtickc, QS
     axisY->setGridLineVisible(true);
     axisY->setTickCount(ytickc);
     axisY->setMinorTickCount(1);
+    axisY->setLabelsFont(QFont("宋体"));
     axisY->setTitleText(yname);
+
+    axisInfo->setMin(0);
+    axisInfo->setMax(2);
+    axisInfo->setGridLineVisible(false);
+    axisInfo->setLabelsFont(QFont("宋体"));
+    axisInfo->append("MIN=", 0);
+    axisInfo->append("RAN=", 1);
+    axisInfo->append("MAX=", 2);
+    axisInfo->setLabelsPosition(QCategoryAxis::AxisLabelsPositionOnValue);
 
     qchart->addAxis(axisX, Qt::AlignBottom); //下：Qt::AlignBottom  上：Qt::AlignTop
     qchart->addAxis(axisY, Qt::AlignLeft);   //左：Qt::AlignLeft    右：Qt::AlignRight
+    qchart->addAxis(axisInfo, Qt::AlignRight);
+
+#if 0
     qchart->setAnimationOptions(QChart::SeriesAnimations);//设置曲线动画模式
+#else
+    qchart->setAnimationOptions(QChart::NoAnimation);//设置曲线动画模式
+#endif
     qchart->legend()->hide(); //隐藏图例
 
     series->attachAxis(axisX);
     series->attachAxis(axisY);
+    series->attachAxis(axisInfo);
 }
 
 void OBNChart::addData(int _data)
 {
-    if(m_curentDataNum < 1000)
+    QPointF point(QPoint(m_curentDataNum, _data));
+    if(m_curentDataNum < m_currentDisplayPointNumb)
     {
+        series->append(point);
         m_curentDataNum += 1;
+
+        ymin   = qMin(ymin, _data);
+        ymax   = qMax(ymax, _data);
+        qchart->axisY()->setRange(ymin, ymax);
+
+        axisInfo->remove("MIN=");
+        axisInfo->remove("RAN=");
+        axisInfo->remove("MAX=");
+        int tempNum = (ymax-ymin)/2;
+        axisInfo->setMin(ymin);
+        axisInfo->setMax(ymax);
+        axisInfo->append("MIN=", ymin);
+        axisInfo->append("RAN=", tempNum);
+        axisInfo->append("MAX=", ymax);
     }
     else
     {
-//        xmax += 1;
-//        m_curentDataNum += 1;
-        m_curentDataNum = 0;
-        series->clear();
+
+        m_curentDataNum += 1;
+        if(10 > temp200.count())
+        {
+            temp200.append(point);
+        }
+        else
+        {
+            QVector<QPointF> pts0ld = series->pointsVector();//原始数据
+            QVector<QPointF> ptsNew;//更新后的数据
+
+            ymin = 8000000;
+            ymax = -8000000;
+            //将后面数据向前平移
+            qint64 iCp =0;
+            int    iTempData = 0;
+            for(iCp = 0; iCp < pts0ld.count()-10; iCp++)
+            {
+                iTempData = pts0ld[10 + iCp].y();
+                ymin   = qMin(ymin, iTempData);
+                ymax   = qMax(ymax, iTempData);
+                ptsNew.append(QPointF(iCp, pts0ld[10 + iCp].y()));//将后面数据平移到开头
+            }
+
+            for(qint64 i = iCp, iList = 0; iList < temp200.count(); i ++, iList ++)
+            {
+                iTempData = temp200.at(iList).y();
+                ymin   = qMin(ymin, iTempData);
+                ymax   = qMax(ymax, iTempData);
+
+                QPointF newPoint(i, temp200.at(iList).y());
+                ptsNew.append(newPoint);
+            }
+            temp200.clear();
+            series->replace(ptsNew);
+
+            qchart->axisY()->setRange(ymin, ymax);
+
+            axisInfo->remove("MIN=");
+            axisInfo->remove("RAN=");
+            axisInfo->remove("MAX=");
+            int tempNum = (ymax-ymin)/2;
+            axisInfo->setMin(ymin);
+            axisInfo->setMax(ymax);
+            axisInfo->append("MIN=", ymin);
+            axisInfo->append("RAN=", tempNum);
+            axisInfo->append("MAX=", ymax);
+        }
     }
-
-    ymin   = qMin(ymin, _data);
-    ymax   = qMax(ymax, _data);
-
-    qchart->axisY()->setRange(ymin, ymax);
-//    qchart->axisX()->setRange(xmin, xmax);
-    QPointF point(QPoint(m_curentDataNum, _data));
-    series->append(point);
 }
 
 /// ====== 重新设置坐标系范围
@@ -109,7 +183,10 @@ void OBNChart::setAddPointF(QPointF _pointInfom, qreal _xmin, qreal _xmax, qreal
     {
         series->remove(0);
     }
-    qchart->axisX()->setRange(_xmin, _xmax);
-    qchart->axisY()->setRange(_ymin, _ymax);
+//    qchart->axisX()->setRange(_xmin, _xmax);
+    QValueAxis *axisY = qobject_cast<QValueAxis *>(qchart->axisY());
+    double yRange = axisY->max() - axisY->min();
+    axisY->setRange(axisY->max() - yRange / 2.0, axisY->max() + yRange / 2.0);
+//    qchart->axisY()->setRange(_ymin, _ymax);
     series->append(_pointInfom);
 }

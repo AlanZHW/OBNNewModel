@@ -58,26 +58,39 @@ OBNWaveformTcpSocket::OBNWaveformTcpSocket(const QString& _ip, const int& _prot)
 
 int OBNWaveformTcpSocket::calculateMeasureInform(QByteArray batArray)
 {
+//    QByteArray batArrayDatum = "01000000";
+//    bool OK = false;
+//    int nDataDatum = batArrayDatum.toInt(&OK, 16);
+//    int nData      = batArray.toInt(&OK, 16);
+//    int n_dataFinal;
+//    if(batArray[0]&0xF)
+//    {
+//        n_dataFinal= nData-nDataDatum;
+//    }
+//    else
+//    {
+//        n_dataFinal = nData;
+//    }
+//    qDebug() << "nDataDatum = " << nDataDatum << "\t nData = " << nData << "\t batArray = " << batArray << "\t n_dataFinal = " << n_dataFinal;
+
     QByteArray batArrayDatum = "01000000";
     bool OK = false;
-    int nDataDatum = batArrayDatum.toInt(&OK, 16);
-    int nData      = batArray.toInt(&OK, 16);
     int n_dataFinal;
-    if(batArray[0]&0xF)
-    {
-        n_dataFinal= nData-nDataDatum;
-    }
-    else
-    {
-        n_dataFinal = nData;
-    }
-    qDebug() << "nDataDatum = " << nDataDatum << "\t nData = " << nData << "\t batArray = " << batArray << "\t n_dataFinal = " << n_dataFinal;
+    int byte2 = batArray.mid(4, 2).toInt(&OK,16);
+    int byte1 = batArray.mid(2, 2).toInt(&OK,16);
+    int byte0 = batArray.mid(0, 2).toInt(&OK,16);
+    qint32 value = byte2 << 16 | byte1 << 8 | byte0;
+
+    if (value & 0x00800000) // MSB is set, indicating negative value
+        value -= 0x01000000; // Adjust value to the correct negative value
+    n_dataFinal = value;
     return n_dataFinal;
 }
 
 /// ======
 void OBNWaveformTcpSocket::startCollection()
 {
+    qDebug() << "开始采集";
     if(this->state() == QAbstractSocket::SocketState::ConnectedState)
     {
         this->write(realTimeWaveStartCollectionCmd, sizeof(realTimeWaveStartCollectionCmd));
@@ -86,6 +99,7 @@ void OBNWaveformTcpSocket::startCollection()
 
 void OBNWaveformTcpSocket::exitCollection()
 {
+    qDebug() << "退出采集";
     if(this->state() == QAbstractSocket::SocketState::ConnectedState)
     {
         this->write(realTimeWaveEndCollectionCmd, sizeof(realTimeWaveEndCollectionCmd));
@@ -94,6 +108,7 @@ void OBNWaveformTcpSocket::exitCollection()
 
 void OBNWaveformTcpSocket::startDisplayWaveform()
 {
+    qDebug() << "打开实时波形";
     if(this->state() == QAbstractSocket::SocketState::ConnectedState)
     {
         this->write(realTimeWaveStartCmd, sizeof(realTimeWaveStartCmd));
@@ -102,6 +117,7 @@ void OBNWaveformTcpSocket::startDisplayWaveform()
 
 void OBNWaveformTcpSocket::exitDisplayWaveform()
 {
+    qDebug() << "关闭实时波形";
     if(this->state() == QAbstractSocket::SocketState::ConnectedState)
     {
         this->write(realTimeWaveEndCmd, sizeof(realTimeWaveEndCmd));

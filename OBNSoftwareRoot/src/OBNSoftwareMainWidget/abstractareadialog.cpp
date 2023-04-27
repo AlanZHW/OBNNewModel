@@ -40,7 +40,7 @@ void AbstractAreaDialog::setOperateHint(const QString &hint)
 }
 
 void AbstractAreaDialog::setOptBtnText(const QString &text)
-{
+{    
     m_operateBtn->setText(text);
 }
 

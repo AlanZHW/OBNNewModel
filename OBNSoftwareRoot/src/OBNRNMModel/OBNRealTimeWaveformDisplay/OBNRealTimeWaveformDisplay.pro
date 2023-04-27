@@ -9,8 +9,8 @@ CONFIG += c++11
 
 include(../../../obnsoftwareroot.pri)
 
-#TEMPLATE = lib
-TEMPLATE = app
+TEMPLATE = lib
+#TEMPLATE = app
 TARGET   = obnrealtimewaveformdisp
 DESTDIR  += $$OBN_RUN_PATH
 #CONFIG   += plugin  #描述生成单一库文件

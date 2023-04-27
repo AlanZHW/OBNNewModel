@@ -719,23 +719,6 @@ QToolButton{
       <property name="handleWidth">
        <number>10</number>
       </property>
-      <widget class="QTreeView" name="treeView_DataList">
-       <property name="maximumSize">
-        <size>
-         <width>343</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QTreeView::item{
-	height:35px;
-}
-background-color:#FFFFFF</string>
-       </property>
-       <property name="lineWidth">
-        <number>5</number>
-       </property>
-      </widget>
       <widget class="QSplitter" name="splitter">
        <property name="orientation">
         <enum>Qt::Vertical</enum>

@@ -47,6 +47,7 @@ void VisitACUFile::run()
     FILE* fp = fopen("./01.dat", "wb");
     fprintf(fp, "ConfigFile is%s\n", ConfigFile.toStdString().c_str());
     fflush(fp);
+
     //====读取config文件获取必要的信息
     if(ConfigFile.isEmpty())
     {
@@ -198,53 +199,55 @@ void VisitACUFile::run()
     //====
     for(int iFile = 0; iFile < mAcufileInfoList.count(); iFile ++)
     {
-//        //====读取ACU文件
-//        QFile fileACU(mAcufileInfoList.at(iFile).AcufileName);
-//        if(!fileACU.exists())
-//        {
-//            qDebug() << "acu file not existe.";
-//            return;
-//        }
+#if 1
+        //====读取ACU文件
+        QFile fileACU(mAcufileInfoList.at(iFile).AcufileName);
+        if(!fileACU.exists())
+        {
+            qDebug() << "acu file not existe.";
+            return;
+        }
 
-//        long long fileSize = fileACU.size();
-//        long long dataCont = fileSize/sizeof(short);
+        long long fileSize = fileACU.size();
+        long long dataCont = fileSize/sizeof(short);
 
-//        char *arrayData  = new char[fileSize];
-//        if(NULL == arrayData)
-//        {
-//            qDebug() << "create array error.";
-//            return;
-//        }
-//        memset(arrayData, 0, fileSize);
+        char *arrayData  = new char[fileSize];
+        if(NULL == arrayData)
+        {
+            qDebug() << "create array error.";
+            return;
+        }
+        memset(arrayData, 0, fileSize);
 
-//        FILE *fpACU = fopen(mAcufileInfoList.at(iFile).AcufileName.toStdString().c_str(), "r");
-//        if(NULL == fpACU)
-//        {
-//            qDebug() << "open acu file error.";
-//            return;
-//        }
-//        long long retcong = 0;
-//        retcong = fread(arrayData, sizeof(char), fileSize, fpACU);
-//        fclose(fpACU);
+        FILE *fpACU = fopen(mAcufileInfoList.at(iFile).AcufileName.toStdString().c_str(), "r");
+        if(NULL == fpACU)
+        {
+            qDebug() << "open acu file error.";
+            return;
+        }
+        long long retcong = 0;
+        retcong = fread(arrayData, sizeof(char), fileSize, fpACU);
+        fclose(fpACU);
 
-//        qDebug() << "retcong = " << retcong;
+        qDebug() << "retcong = " << retcong;
 
-//        short *tmpArrayData = (short*)arrayData;
-//        for(long long iDt = 0; iDt < dataCont; iDt ++)
-//        {
-//            short tmpData  = tmpArrayData[iDt];
-//            tmpArrayData[iDt] = ((tmpData & 0x00FF) << 8 ) | ((tmpData & 0xFF00) >> 8);
-//        }
+        short *tmpArrayData = (short*)arrayData;
+        for(long long iDt = 0; iDt < dataCont; iDt ++)
+        {
+            short tmpData  = tmpArrayData[iDt];
+            tmpArrayData[iDt] = ((tmpData & 0x00FF) << 8 ) | ((tmpData & 0xFF00) >> 8);
+        }
 
-//        //====zhw debug
-//        FILE *fp = fopen("./test_data", "wb");
-//        for(long long itr = 0; itr < dataCont; itr ++)
-//            fprintf(fp, "%hd\n", arrayData[dataCont]);
-//        fclose(fp); fp = NULL;
-//        //====调用matlab程序进行计算
-//        CallMatlabFunction(arrayData, dataCont, mAcufileInfoList.at(iFile).AcufileName);
-//        delete [] arrayData;
+        //====zhw debug
+        FILE *fp = fopen("./test_data", "wb");
+        for(long long itr = 0; itr < dataCont; itr ++)
+            fprintf(fp, "%hd\n", arrayData[dataCont]);
+        fclose(fp); fp = NULL;
 
+        //====调用matlab程序进行计算
+        //CallMatlabFunction(arrayData, dataCont, mAcufileInfoList.at(iFile).AcufileName);
+        delete [] arrayData;
+#else
         //====新的实现方式
         if(!CallMatlabFunction(mAcufileInfoList, OriginLineNum, nOriginInfo, nUnitInfoList, iFile, m_areaDataInfo))
         {
@@ -260,6 +263,7 @@ void VisitACUFile::run()
             delete m_areaDataInfo; m_areaDataInfo = NULL;
             emit signalError("Calculation error.");
         }
+#endif
     }
     fprintf(fp, "完成且正常结束\n");
     fflush(fp);

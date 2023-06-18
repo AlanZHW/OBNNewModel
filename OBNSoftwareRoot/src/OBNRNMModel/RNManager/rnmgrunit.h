@@ -155,7 +155,7 @@ private:
 
     QMap<int,SearchThread *> m_threads;
     int           m_searchedNodes;
-    quint32       m_startIP,m_lastIP;
+    quint32       m_firstIP, m_startIP,m_lastIP;
     QVector<uint> m_totalIp;
 
     QVector<Node *>  m_Nodes;

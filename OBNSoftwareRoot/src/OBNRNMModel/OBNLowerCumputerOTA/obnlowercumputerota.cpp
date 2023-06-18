@@ -54,7 +54,8 @@ OBNLowerCumputerOTA::OBNLowerCumputerOTA(QWidget *parent)
         switch(ui->comboBoxOption->currentIndex())
         {
         case 0:
-
+            m_startUpload = true;
+            startChangeConfigFileFunction();
 #if 0
             for(int iRow = 0; iRow < m_curentNodeNum; iRow ++)
             {
@@ -68,21 +69,8 @@ OBNLowerCumputerOTA::OBNLowerCumputerOTA(QWidget *parent)
             break;
         case 1:
         {
-#if 0
-            QString nNameConfigUpload = m_currentConfigFileName.replace("download", "upload");
-            QString nNameConfigFtpName= "/media/pi/OBN/"+m_curentHostConfigFileName;
-            for(int iRow = 0; iRow < m_curentNodeNum; iRow ++)
-            {
-                QCheckBox* nTempCheckBox =  (QCheckBox*)ui->tableWidgetOTA->cellWidget(iRow, 0);
-                if(nTempCheckBox->isChecked())
-                {
-                    m_curentNodes[iRow].putOTAFileFunction(nNameConfigUpload, nNameConfigFtpName);
-                }
-            }
-#else
             m_startUpload = true;
             startChangeConfigFileFunction();
-#endif
         }
             break;
         default:
@@ -152,41 +140,6 @@ OBNLowerCumputerOTA::OBNLowerCumputerOTA(QWidget *parent)
             m_curentNodes[item->row()].getConfigFile(m_hostVertor[item->row()].hostNum, m_currentWorkPath);
         }
     });
-#if 0
-    /// ====== 点击"保存按钮"将配置文件存储到本地
-    connect(ui->pushButtonSaveCfg, &QPushButton::clicked, this, [=](){
-        QString nNameConfigUpload = m_currentConfigFileName.replace("download", "upload");
-        FILE * m_fileNew = fopen(nNameConfigUpload.toStdString().c_str(), "wb");
-        if(NULL == m_fileNew)
-        {
-            QMessageBox::information(this, tr("告警"), tr("打开主机工作目录文件失败,请检查!"), tr("确定"));
-            return;
-        }
-        for(int iNO = 0; iNO < 64; iNO ++)
-        {
-            fprintf(m_fileNew, "*");
-        }
-        fprintf(m_fileNew, "\n");
-        for(int iRow = 0; iRow < ui->tableWidgetCfgInform->rowCount(); iRow ++)
-        {
-            if(ui->tableWidgetCfgInform->item(iRow, 2)->text().isEmpty())
-            {
-                fprintf(m_fileNew, "%-27s:%s\n", ui->tableWidgetCfgInform->item(iRow,0)->text().toStdString().c_str(),ui->tableWidgetCfgInform->item(iRow,1)->text().toStdString().c_str());
-            }
-            else
-            {
-                fprintf(m_fileNew, "%-27s:%s    %s\n", ui->tableWidgetCfgInform->item(iRow,0)->text().toStdString().c_str(),
-                                                       ui->tableWidgetCfgInform->item(iRow,1)->text().toStdString().c_str(),
-                                                       ui->tableWidgetCfgInform->item(iRow,2)->text().toStdString().c_str());
-            }
-        }
-        fclose(m_fileNew);
-        m_fileNew = NULL;
-    });
-#endif
-
-    QString nConfigName = "/home/datuo/ZHW/Tool/OBNSoftwareRoot/data/config/cdscfg.lst";
-    initConfigTableInfrom(0, nConfigName);
 }
 
 OBNLowerCumputerOTA::~OBNLowerCumputerOTA()
@@ -222,7 +175,6 @@ void OBNLowerCumputerOTA::startChangeConfigFileFunction()
     {
         /// ====== 恢复按钮可点击
         ui->pushButtonStart->setEnabled(true);
-
         QMessageBox::information(this, tr("告警"), tr(""), tr("确定"));
         return;
     }
@@ -276,10 +228,9 @@ void OBNLowerCumputerOTA::getCurentChangeIDAlsoGetConfigFile()
 void OBNLowerCumputerOTA::readCurrentConfigFileFunction(int _row, const QString&)
 {
     /// ------ 检索目标文件
-    QString fileName;
     QString nodePath = m_currentWorkPath+Dir_Separator+m_hostVertor[_row].hostNum;
 
-    QDir fileDir(m_hostPath);
+    QDir fileDir(nodePath);
     fileDir.setFilter(QDir::Files);
     QFileInfoList fileInfoList = fileDir.entryInfoList();
 
@@ -288,15 +239,18 @@ void OBNLowerCumputerOTA::readCurrentConfigFileFunction(int _row, const QString&
     {
         if("lst" == fileInfoList.at(inf).suffix())
         {
-            fileName = fileInfoList.at(inf).fileName();
+            m_curentHostConfigFileName = fileInfoList.at(inf).fileName();
         }
     }
     fileInfoList.clear();
 
     /// ------ 修改文件名
-    QString nNameConfigOld = m_hostPath + Dir_Separator + fileName;
-    QString nNameConfigNew = m_hostPath + Dir_Separator + fileName + ".download";
-    QString nNameConfigUp = m_hostPath + Dir_Separator + fileName + ".upload";
+    QString nNameConfigOld = nodePath + Dir_Separator + m_curentHostConfigFileName;
+    QString nNameConfigNew = nodePath + Dir_Separator + m_curentHostConfigFileName + ".download";
+    QString nNameConfigUp  = nodePath + Dir_Separator + m_curentHostConfigFileName + ".upload";
+    qDebug() << "nNameConfigOld = " << nNameConfigOld;
+    qDebug() << "nNameConfigNew = " << nNameConfigNew;
+    qDebug() << "nNameConfigUp = " << nNameConfigUp;
     QFile fileRename(nNameConfigOld);
     fileRename.rename(nNameConfigNew);
 
@@ -309,6 +263,7 @@ void OBNLowerCumputerOTA::readCurrentConfigFileFunction(int _row, const QString&
 
     /// ------ 调用上传文件
     QString nNameConfigFtpName= "/media/pi/OBN/"+m_curentHostConfigFileName;
+    qDebug() << "nNameConfigUp = " << nNameConfigUp << "\t nNameConfigFtpName = " << nNameConfigFtpName;
     putCurrentConfigFileFunction(_row, nNameConfigUp, nNameConfigFtpName);
 }
 
@@ -318,14 +273,14 @@ void OBNLowerCumputerOTA::readConfigInformFunction(const QString& _configName, Q
     QFileInfo fileInform(_configName);
     if(!fileInform.exists())
     {
-        QMessageBox::information(this, tr("告警"), tr(""), tr("确定"));
+        QMessageBox::information(this, tr("告警"), tr("Config文件不存在,请检查!"), tr("确定"));
         return;
     }
 
     QFile fileRead(_configName);
     if(!fileRead.open(QIODevice::ReadOnly|QIODevice::Text))
     {
-        QMessageBox::information(this, tr("告警"), tr(""), tr("确定"));
+        QMessageBox::information(this, tr("告警"), tr("打开config文件失败,请检查!"), tr("确定"));
         return;
     }
 
@@ -363,6 +318,7 @@ void OBNLowerCumputerOTA::updateCurrentConfigFileFunction(const QString& _upload
     {
         if(ui->tableWidgetCfgInform->item(iRow, 2)->text().isEmpty())
             continue;
+        _configInformList[iRow]._name  = ui->tableWidgetCfgInform->item(iRow, 0)->text();
         _configInformList[iRow]._value = ui->tableWidgetCfgInform->item(iRow, 1)->text();
     }
 
@@ -406,10 +362,13 @@ void OBNLowerCumputerOTA::slotPutOTAFileSuccess(int row)
     {
     case 0:     ///<上传升级文件成功
         qDebug() << "节点:" << nCurentNode << ",上传配置升级文件";
+        m_curentSelectedNodeList.removeAt(0);
         putUpgradeFilesFunctio(m_currentFileName, m_curentNodefName);
         break;
     case 1:     ///<上传配置文件成功
         qDebug() << "节点:" << nCurentNode << ",上传配置文件成功";
+        ui->tableWidgetOTA->item(m_curentSelectedNodeList.at(0), 5)->setText("上传配置文件成功");
+        m_curentSelectedNodeList.removeAt(0);
         getCurentChangeIDAlsoGetConfigFile();
         break;
     default:
@@ -497,11 +456,15 @@ void OBNLowerCumputerOTA::slotOTAGetConfigFileSuccess(int row, const QString& _c
     }
 }
 
-void OBNLowerCumputerOTA::initConfigTableInfrom(int, const QString& _configfName)
+void OBNLowerCumputerOTA::initConfigTableInfrom(int _row, const QString& _configfName)
 {
+    QString nodePath = m_currentWorkPath+Dir_Separator+m_hostVertor[_row].hostNum;
+    QString nConfigName = nodePath + Dir_Separator + _configfName;
+    qDebug() << "_configfName = " << _configfName;
+
     /// ------ 读取目标文件内容
     QList<CFGInform> n_curentConfigInform;
-    readConfigInformFunction(_configfName, n_curentConfigInform);
+    readConfigInformFunction(nConfigName, n_curentConfigInform);
 
     /// ======将配置文件内容显示到表格中
     ui->tableWidgetCfgInform->setRowCount(n_curentConfigInform.count());
@@ -514,104 +477,15 @@ void OBNLowerCumputerOTA::initConfigTableInfrom(int, const QString& _configfName
     for(int iRow = 0; iRow < n_curentConfigInform.count(); iRow ++)
     {
         ui->tableWidgetCfgInform->setItem(iRow, 0, new QTableWidgetItem(n_curentConfigInform[iRow]._name));
-        ui->tableWidgetCfgInform->item(iRow, 0)->setFlags(ui->tableWidgetCfgInform->item(iRow, 0)->flags() & ~Qt::ItemIsEnabled);
-
         ui->tableWidgetCfgInform->setItem(iRow, 1, new QTableWidgetItem(n_curentConfigInform[iRow]._value));
         if(n_curentConfigInform[iRow]._explain.isEmpty())
         {
             ui->tableWidgetCfgInform->item(iRow, 1)->setFlags(ui->tableWidgetCfgInform->item(iRow, 1)->flags() & ~Qt::ItemIsEnabled);
         }
-
         ui->tableWidgetCfgInform->setItem(iRow, 2, new QTableWidgetItem(n_curentConfigInform[iRow]._explain));
         ui->tableWidgetCfgInform->item(iRow, 2)->setFlags(ui->tableWidgetCfgInform->item(iRow, 2)->flags() & ~Qt::ItemIsEnabled);
     }
     n_curentConfigInform.clear();
-#if 0
-    m_curentHostConfigFileName = _configfName;
-    ui->tableWidgetCfgInform->clear();
-    QString fileName;
-    m_hostPath = m_currentWorkPath + Dir_Separator + m_hostVertor[row].hostNum; ///< 当前存放配置文件最底层目录
-    QDir fileDir(m_hostPath);
-    fileDir.setFilter(QDir::Files);
-    QFileInfoList fileInfoList = fileDir.entryInfoList();
-    QStringList fileList;
-    for(int inf = 0; inf < fileInfoList .count(); inf ++)
-    {
-        if("lst" == fileInfoList.at(inf).suffix())
-        {
-            fileName = fileInfoList.at(inf).fileName();
-        }
-    }
-    /// ====== get到的config文件名
-    QString nNameConfigOld = m_hostPath + Dir_Separator + fileName;
-    QString nNameConfigNew = m_hostPath + Dir_Separator + fileName + ".download";
-    QFile fileRename(nNameConfigOld);
-    fileRename.rename(nNameConfigNew);
-
-    m_currentConfigFileName = nNameConfigNew;
-    QFile cfgFile(m_currentConfigFileName);
-    if(cfgFile.exists())
-    {
-        if(cfgFile.open(QIODevice::ReadOnly|QIODevice::Text))
-        {
-            QList<CFGInform> n_curentCFGInformList;
-            QStringList n_currentDataList;
-            /// ======读取配置文件内容
-            QTextStream in(&cfgFile);
-            while(!in.atEnd())
-            {
-                QString nReadCfgLine = in.readLine().trimmed().replace(QRegExp("[\\s]+"), " ");
-                if(-1 == nReadCfgLine.indexOf(":"))
-                {
-                    continue;
-                }
-                n_currentDataList = nReadCfgLine.split(":");
-                CFGInform tmpCfgInform;
-                tmpCfgInform._name = n_currentDataList[0];
-
-                int idx = n_currentDataList[1].indexOf("//");
-                if(-1 == idx)
-                {
-                    tmpCfgInform._value = n_currentDataList[1];
-                }
-                else
-                {
-                    tmpCfgInform._value  = n_currentDataList[1].mid(0, n_currentDataList[1].indexOf(" "));
-                    tmpCfgInform._explain= n_currentDataList[1].mid(n_currentDataList[1].indexOf(tmpCfgInform._value)+tmpCfgInform._value.length()+1, n_currentDataList[1].length()-1);
-                }
-                n_curentCFGInformList.append(tmpCfgInform);
-            }
-            cfgFile.close();
-
-            /// ======将配置文件内容显示到表格中
-            ui->tableWidgetCfgInform->setRowCount(n_curentCFGInformList.count());
-            ui->tableWidgetCfgInform->setColumnCount(3);
-            ui->tableWidgetCfgInform->horizontalHeader()->setStretchLastSection(true);
-            ui->tableWidgetCfgInform->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-            QStringList n_curentCfgTableHeader;
-            n_curentCfgTableHeader << tr("参数名") << tr("参数值") << tr("说明");
-            ui->tableWidgetCfgInform->setHorizontalHeaderLabels(n_curentCfgTableHeader);
-            for(int iRow = 0; iRow < n_curentCFGInformList.count(); iRow ++)
-            {
-                ui->tableWidgetCfgInform->setItem(iRow, 0, new QTableWidgetItem(n_curentCFGInformList[iRow]._name));
-                ui->tableWidgetCfgInform->item(iRow, 0)->setFlags(ui->tableWidgetCfgInform->item(iRow, 0)->flags() & ~Qt::ItemIsEnabled);
-
-                ui->tableWidgetCfgInform->setItem(iRow, 1, new QTableWidgetItem(n_curentCFGInformList[iRow]._value));
-                if(n_curentCFGInformList[iRow]._explain.isEmpty())
-                {
-                    ui->tableWidgetCfgInform->item(iRow, 1)->setFlags(ui->tableWidgetCfgInform->item(iRow, 1)->flags() & ~Qt::ItemIsEnabled);
-                }
-
-                ui->tableWidgetCfgInform->setItem(iRow, 2, new QTableWidgetItem(n_curentCFGInformList[iRow]._explain));
-                ui->tableWidgetCfgInform->item(iRow, 2)->setFlags(ui->tableWidgetCfgInform->item(iRow, 2)->flags() & ~Qt::ItemIsEnabled);
-            }
-        }
-    }
-    else
-    {
-        QMessageBox::information(this, tr("错误"), tr("本地配置文件不存在,请检查."), tr("确定"));
-    }
-#endif
 }
 
 /// ====== 获取升级进度

@@ -4,7 +4,7 @@
 ShotLineDlg::ShotLineDlg(QDialog *parent)
     :QDialog(parent)
 {
-    this->setWindowTitle("炮线文件");
+    this->setWindowTitle(tr("炮线文件"));
     initDlg();
     this->resize(240,360);
 }
@@ -40,7 +40,7 @@ void ShotLineDlg::initDlg()
 
     QHBoxLayout *btnLayout = new QHBoxLayout;
     btnLayout->addStretch(1);
-    QPushButton *okBtn = new QPushButton("&确定",this);
+    QPushButton *okBtn = new QPushButton(tr("&确定"),this);
     btnLayout->addWidget(okBtn);
     btnLayout->addStretch(1);
     mainLayout->addLayout(btnLayout);

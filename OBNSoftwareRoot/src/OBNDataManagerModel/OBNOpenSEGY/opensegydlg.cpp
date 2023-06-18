@@ -9,12 +9,8 @@ OpenSegyDlg::OpenSegyDlg(QWidget *parent)
 {
     ui->setupUi(this);
     this->setWindowTitle(tr("显示SEGY文件"));
-
-
     m_fileDetailDlg  = new FileDetailDlg(this);
-
     m_OpenFilesType  = One_Component;//默认打开一个分量文件显示
-
     ui->maxShowTraceSpx->setRange(1,INT_MAX);
     ui->maxShowTraceSpx->setValue(500);
     ui->startTraceSpx->setRange(1,INT_MAX);
@@ -35,8 +31,8 @@ OpenSegyDlg::OpenSegyDlg(QWidget *parent)
     m_fileNameEdits.append(ui->fileNameEdit_3);
     m_fileNameEdits.append(ui->fileNameEdit_4);
     connect(m_brwserBtnGrp,SIGNAL(buttonClicked(int)),this,SLOT(slotBrwBtnClicked(int)));
-    this->adjustSize();
 
+    this->setFixedHeight(500);
 }
 
 OpenSegyDlg::~OpenSegyDlg()
@@ -57,9 +53,11 @@ void OpenSegyDlg::slotBrwBtnClicked(int id)
         m_currentPath = QDir::currentPath();
 
     //打开文件系统选择文件
-    QString fileName = QFileDialog::getOpenFileName(this,"Choose File to Open",m_currentPath,tr("Segy(*.segy)"));
+    QString fileName = QFileDialog::getOpenFileName(this,tr("选择要打开的文件"), m_currentPath, tr("Segy(*.segy)"));
     if(fileName.isEmpty())
+    {
         return;
+    }
     m_currentPath = QFileInfo(fileName).filePath();
 
     //一分量
@@ -80,7 +78,8 @@ void OpenSegyDlg::slotBrwBtnClicked(int id)
         int idx = componentSuffixs.indexOf(fileName.right(8));
         if(idx != id)
         {
-            QMessageBox::warning(this,"warning",QString("Need input %1 file.").arg(componentSuffixs[idx]));
+            QString inform = tr("需要输入数据") + componentSuffixs[idx] + "文件.";
+            QMessageBox::warning(this, tr("警告"), inform, tr("确定"));
             return;
         }
         m_fileNameEdits[fileIndex[idx]]->setText(fileName);
@@ -112,7 +111,7 @@ void OpenSegyDlg::slotBrwBtnClicked(int id)
     //打开文件，获取基本信息
     if(!openSegyFile(m_fileList))
     {
-        QMessageBox::warning(this,"Open File","Open File Error.");
+        QMessageBox::warning(this, tr("打开文件"), tr("打开文件失败,请检查!"), tr("确定"));
     }
 }
 
@@ -264,11 +263,12 @@ void OpenSegyDlg::on_OneComRbtn_clicked()
         return;
     }
     m_OpenFilesType = One_Component;
-    ui->label->setText("File:");
+    ui->label->setText(tr("文件:"));
     int decHeight = ui->FileExpandWg->height();
     ui->FileExpandWg->hide();
     ui->groupBox_3->resize(ui->groupBox_3->width(), ui->groupBox_3->height() -decHeight);
-    this->adjustSize();
+
+    this->setFixedHeight(500);
 }
 
 void OpenSegyDlg::on_FourComRbtn_clicked()
@@ -278,6 +278,7 @@ void OpenSegyDlg::on_FourComRbtn_clicked()
         return;
     }
     m_OpenFilesType = Four_Component;
-    ui->label->setText("File(bhx):");
+    ui->label->setText(tr("文件(bhx):"));
     ui->FileExpandWg->show();
+    this->setFixedHeight(589);
 }

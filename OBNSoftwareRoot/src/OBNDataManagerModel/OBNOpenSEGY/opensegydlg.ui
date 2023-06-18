@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>448</width>
-    <height>575</height>
+    <width>588</width>
+    <height>589</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
-      <string>Open File</string>
+      <string>打开文件</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
@@ -25,7 +25,7 @@
         <item>
          <widget class="QRadioButton" name="OneComRbtn">
           <property name="text">
-           <string>One Component</string>
+           <string>一分量</string>
           </property>
           <property name="checked">
            <bool>true</bool>
@@ -35,7 +35,7 @@
         <item>
          <widget class="QRadioButton" name="FourComRbtn">
           <property name="text">
-           <string>Four Component</string>
+           <string>四分量</string>
           </property>
          </widget>
         </item>
@@ -46,7 +46,7 @@
         <item>
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>File(bhx):</string>
+           <string>文件名(bhx):</string>
           </property>
          </widget>
         </item>
@@ -88,7 +88,7 @@
            <item>
             <widget class="QLabel" name="label_7">
              <property name="text">
-              <string>File(bhy):</string>
+              <string>文件名(bhy):</string>
              </property>
             </widget>
            </item>
@@ -115,7 +115,7 @@
            <item>
             <widget class="QLabel" name="label_8">
              <property name="text">
-              <string>File(bhz):</string>
+              <string>文件名(bhz):</string>
              </property>
             </widget>
            </item>
@@ -142,7 +142,7 @@
            <item>
             <widget class="QLabel" name="label_9">
              <property name="text">
-              <string>File(hyd):</string>
+              <string>文件名(hyd):</string>
              </property>
             </widget>
            </item>
@@ -189,13 +189,13 @@
       <item>
        <widget class="QGroupBox" name="groupBox">
         <property name="title">
-         <string>Trace Header Information</string>
+         <string>SEGY数据信息</string>
         </property>
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0">
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>Number of Data Samples:</string>
+            <string>采样点个数:</string>
            </property>
           </widget>
          </item>
@@ -209,7 +209,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Sample Interval(us):</string>
+            <string>采样率(us):</string>
            </property>
           </widget>
          </item>
@@ -223,7 +223,7 @@
          <item row="2" column="0">
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Number of Trace:</string>
+            <string>总道数:</string>
            </property>
           </widget>
          </item>
@@ -234,49 +234,12 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_5">
+         <item row="3" column="1">
+          <widget class="QPushButton" name="detailBtn">
            <property name="text">
-            <string>Trace Header Details</string>
+            <string>&amp;显示数据道头</string>
            </property>
           </widget>
-         </item>
-         <item row="3" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <spacer name="horizontalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QPushButton" name="detailBtn">
-             <property name="text">
-              <string>&amp;Detail</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_4">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
          </item>
         </layout>
        </widget>
@@ -291,13 +254,13 @@
       <item>
        <widget class="QGroupBox" name="groupBox_2">
         <property name="title">
-         <string>All Entry</string>
+         <string>所有数据</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="0" rowspan="2">
           <widget class="QLabel" name="label_10">
            <property name="text">
-            <string>Start Trace No:</string>
+            <string>起始道序号:</string>
            </property>
           </widget>
          </item>
@@ -310,7 +273,7 @@
          <item row="2" column="0">
           <widget class="QLabel" name="label_6">
            <property name="text">
-            <string>Max Traces(Per Component) Per Screen:</string>
+            <string>终了道序号:</string>
            </property>
           </widget>
          </item>
@@ -338,14 +301,27 @@
      <item>
       <widget class="QPushButton" name="okBtn">
        <property name="text">
-        <string>&amp;Ok</string>
+        <string>&amp;确定</string>
        </property>
       </widget>
      </item>
      <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QPushButton" name="cancelBtn">
        <property name="text">
-        <string>&amp;Cancel</string>
+        <string>&amp;取消</string>
        </property>
       </widget>
      </item>

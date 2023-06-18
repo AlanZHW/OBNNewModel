@@ -193,21 +193,23 @@ bool AbstractSegyProducer::readSpsFiles()
                          << " millisecond = " << m_areaDataInfo->shotStationInfo->staLines[iShot].stations[iStaNum].millisecond;
             }
         }
+#if 0
+        //结果查看
+        RelationInfo *relationInfo = m_areaDataInfo->relationInfo;
+        Relation *realtions        = relationInfo->relations;
+        for(int i = 0; i < relationInfo->relationNum; i ++)
+        {
+            qDebug()<<"shot line:"      << realtions[i].shotLine
+                    <<"shot no:"        << realtions[i].ep
+                    <<"first trace:"    << realtions[i].firstTrace
+                    <<"last trace:"     << realtions[i].lastTrace
+                    <<"recv line:"      << realtions[i].recvLine
+                    <<"first station:"  << realtions[i].firstRecv
+                    <<"last station:"   << realtions[i].lastRecv;
+        }
 #endif
 
-    //    //结果查看
-    //    RelationInfo *relationInfo = m_areaDataInfo->relationInfo;
-    //    Relation *realtions        = relationInfo->relations;
-    //    for(int i = 0; i < relationInfo->relationNum; i ++)
-    //    {
-    //        qDebug()<<"shot line:"      << realtions[i].shotLine
-    //                <<"shot no:"        << realtions[i].ep
-    //                <<"first trace:"    << realtions[i].firstTrace
-    //                <<"last trace:"     << realtions[i].lastTrace
-    //                <<"recv line:"      << realtions[i].recvLine
-    //                <<"first station:"  << realtions[i].firstRecv
-    //                <<"last station:"   << realtions[i].lastRecv;
-    //    }
+#endif
     return true;
 }
 

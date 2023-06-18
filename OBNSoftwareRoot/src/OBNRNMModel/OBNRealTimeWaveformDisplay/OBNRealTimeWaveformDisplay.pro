@@ -13,7 +13,7 @@ TEMPLATE = lib
 #TEMPLATE = app
 TARGET   = obnrealtimewaveformdisp
 DESTDIR  += $$OBN_RUN_PATH
-#CONFIG   += plugin  #描述生成单一库文件
+CONFIG   += plugin  #描述生成单一库文件
 DEFINES += OBNREALTIMEWAVEFORMDISPLAY_LIBRARY
 
 SOURCES += \

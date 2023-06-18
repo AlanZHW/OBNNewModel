@@ -9,6 +9,7 @@ CONFIG += c++11
 include(../../../obnsoftwareroot.pri)
 
 TEMPLATE = lib
+#TEMPLATE = app
 TARGET   = obnretrieveavailablenodes
 DESTDIR  += $$OBN_RUN_PATH
 CONFIG   += plugin  #描述生成单一库文件
@@ -24,7 +25,8 @@ SOURCES += \
     iplineedit.cpp \
     ippartlineedit.cpp \
     obnretrieveavailablenodes.cpp \
-    obnsearchhoststhread.cpp
+    obnsearchhoststhread.cpp \
+    main.cpp
 
 HEADERS += \
     iplineedit.h \

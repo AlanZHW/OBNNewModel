@@ -79,12 +79,9 @@ private:
     bool mainRecvProcess(DataFileInfo *);
     //计算炮时
     double calTimeErr(DataFileInfo *dataFileInfo,const int &file_index,const QDateTime &shotTime);
-
     bool readDataFromFile(FileInfo *fileInfo,int sample_offset,int samples,float *in,int ins);
-
     /// 20220914 ZHW-ADD 新版本数据格式读取有效数据文件列表和采样率
     bool readDataFileLstInform(DataFileInfo *pDatafInform, DepolyedDevice *pDepolyedDevice);
-
 private:
     QList<DepolyedDevice *> m_depolyedDevices;
     ShotLineTimes      *m_shotLineTimes;

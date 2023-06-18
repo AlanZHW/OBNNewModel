@@ -26,9 +26,7 @@ OBNWaveformTcpSocket::OBNWaveformTcpSocket(const QString& _ip, const int& _prot)
 
     m_timer.setInterval(5);
     connect(&m_timer, &QTimer::timeout, this, [=](){
-
         QString textInform = QString::fromLatin1(m_dataInform.toHex());
-
         QByteArray XByteArray, YByteArray, ZByteArray, HByteArray;
         int index = textInform.indexOf(WAVEFORM_HEAD);
         int XNum = 0, YNum = 0, ZNum = 0, HNum = 0;
@@ -49,6 +47,7 @@ OBNWaveformTcpSocket::OBNWaveformTcpSocket(const QString& _ip, const int& _prot)
 
             HByteArray = textInform.mid(24, 6).toLatin1();
             HNum = calculateMeasureInform(HByteArray);
+            //qDebug() << "XByteArray = " << XByteArray << "\t YByteArray = " << YByteArray << "\t ZByteArray = " << ZByteArray << "\t HByteArray = " << HByteArray;
             /// ====== 增加点信号
             emit sig_curent_data(XNum, YNum, ZNum, HNum);
         }
@@ -58,21 +57,25 @@ OBNWaveformTcpSocket::OBNWaveformTcpSocket(const QString& _ip, const int& _prot)
 
 int OBNWaveformTcpSocket::calculateMeasureInform(QByteArray batArray)
 {
-//    QByteArray batArrayDatum = "01000000";
-//    bool OK = false;
-//    int nDataDatum = batArrayDatum.toInt(&OK, 16);
-//    int nData      = batArray.toInt(&OK, 16);
-//    int n_dataFinal;
-//    if(batArray[0]&0xF)
-//    {
-//        n_dataFinal= nData-nDataDatum;
-//    }
-//    else
-//    {
-//        n_dataFinal = nData;
-//    }
-//    qDebug() << "nDataDatum = " << nDataDatum << "\t nData = " << nData << "\t batArray = " << batArray << "\t n_dataFinal = " << n_dataFinal;
-
+#if 1
+    QByteArray batArrayDatum = "01000000";
+    bool OK = false;
+    int nDataDatum = batArrayDatum.toInt(&OK, 16);
+    int nData      = batArray.toInt(&OK, 16);
+    int n_dataFinal;
+    char batArray0 = batArray.at(0);
+    unsigned char log = batArray0 >> 3;
+    if(log == (char)12)
+    {
+        n_dataFinal= nData-nDataDatum;
+    }
+    else
+    {
+        n_dataFinal = nData;
+    }
+    qDebug() << "time " << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss:zzz") << "\t nDataDatum = " << nDataDatum
+             << "\t batArray0 = " << batArray0 << "\t log = " << log << "\t nData = " << nData << "\t batArray = " << batArray << "\t n_dataFinal = " << n_dataFinal;
+#else
     QByteArray batArrayDatum = "01000000";
     bool OK = false;
     int n_dataFinal;
@@ -81,9 +84,10 @@ int OBNWaveformTcpSocket::calculateMeasureInform(QByteArray batArray)
     int byte0 = batArray.mid(0, 2).toInt(&OK,16);
     qint32 value = byte2 << 16 | byte1 << 8 | byte0;
 
-    if (value & 0x00800000) // MSB is set, indicating negative value
+    if (value & 0x00800000)  // MSB is set, indicating negative value
         value -= 0x01000000; // Adjust value to the correct negative value
     n_dataFinal = value;
+#endif
     return n_dataFinal;
 }
 

@@ -29,19 +29,19 @@ void OBNRealTimeWaveformDispGroup::initCurrentWidget()
 
     nChartX = new OBNChart(this, "X channel");
     nChartX->setContentsMargins(0,0,0,0);
-    nChartX->setAxis(tr(" "), 0, 2000, 6, tr(" "), 8000000, -8000000, 2);
+    nChartX->setAxis(tr(" "), 0, 1000, 6, tr(" "), 8000000, -8000000, 2);
 
     nChartY = new OBNChart(this, "Y channel");
     nChartY->setContentsMargins(0,0,0,0);
-    nChartY->setAxis(tr(" "), 0, 2000, 6, tr(" "), 8000000, -8000000, 2);
+    nChartY->setAxis(tr(" "), 0, 1000, 6, tr(" "), 8000000, -8000000, 2);
 
     nChartZ = new OBNChart(this, "Z channel");
     nChartZ->setContentsMargins(0,0,0,0);
-    nChartZ->setAxis(tr(" "), 0, 2000, 6, tr(" "), 8000000, -8000000, 2);
+    nChartZ->setAxis(tr(" "), 0, 1000, 6, tr(" "), 8000000, -8000000, 2);
 
     nChartH = new OBNChart(this, "Fourth channel");
     nChartH->setContentsMargins(0,0,0,0);
-    nChartH->setAxis(tr(" "), 0, 2000, 6, tr(" "), 8000000, -8000000, 2);
+    nChartH->setAxis(tr(" "), 0, 1000, 6, tr(" "), 8000000, -8000000, 2);
 
     QVBoxLayout* mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins(0, 0, 0, 0);

@@ -27,11 +27,14 @@ void OBNOtaNodeFtp::slotListInform(const QUrlInfo& _urlInfo)
             m_currentConfigfName = _urlInfo.name();
         }
     }
+    qDebug() << "m_currentConfigfName = " << m_currentConfigfName;
 }
 
 /// ====== 设置路径
 void OBNOtaNodeFtp::slotSetWorkPath(const QString& _workPath)
 {
+    m_currentConfigPath = _workPath;
+
     m_curentCD = m_ftp->cd(_workPath);
     if("/media/pi/OBN" == _workPath)
     {
@@ -54,14 +57,16 @@ void OBNOtaNodeFtp::slotGetConfigFile(const QString& _hostName, const QString& _
     }
 
     QString configName = confileDirName + Dir_Separator + m_currentConfigfName;
-    qDebug() << "configName = " << configName;
     if(NULL == m_file)
     {
         m_file = new QFile(this);
     }
     m_file->setFileName(configName);
     m_file->open(QIODevice::WriteOnly);
-    m_curentGet = m_ftp->get(m_currentConfigfName, m_file);
+
+    QString n_curentFtpfName = m_currentConfigPath + Dir_Separator + m_currentConfigfName;
+    qDebug() << "configName = " << configName << "\t n_curentFtpfName = "<< n_curentFtpfName;
+    m_curentGet = m_ftp->get(n_curentFtpfName, m_file);
 }
 
 /// ====== 获取下载,上传进度

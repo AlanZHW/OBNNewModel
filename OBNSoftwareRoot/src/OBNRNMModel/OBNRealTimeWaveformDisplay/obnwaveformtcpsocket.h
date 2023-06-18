@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QThread>
 #include <QString>
+#include <QDateTime>
 #include <QByteArray>
 #include <QTcpSocket>
 

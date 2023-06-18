@@ -14,7 +14,7 @@ include(../../../obnsoftwareroot.pri)
 
 TEMPLATE = app
 TARGET   = ExportSegyProgram
-#DESTDIR  += $$OBN_RUN_PATH
+DESTDIR  += $$OBN_RUN_PATH
 
 INCLUDEPATH += $$OBN_INCLUDE_PATH
 INCLUDEPATH += $$OBN_ROOT_PATH/src/OBNOtherLibraries/Core
@@ -31,7 +31,7 @@ LIBS += -L$$OBN_RUN_PATH -lCore -lGPublicSo -lAlgorithm
 contains(QMAKE_HOST.os,Linux){
 LIBS += -L$$OBN_RUN_PATH/Linux -lfftw3f
 }else{
-LIBS += -L$$OBN_RUN_PATH/Windows -lfftw3f-3
+LIBS += -L$$OBN_RUN_PATH/Windows -llibfftw3f-3
 }
 
 

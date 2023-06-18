@@ -28,7 +28,6 @@ public:
 public slots:
     void slotSearchButtonClicked();
     void slotOKButtonClicked();
-    void slotResetButtonClicked();
 
     /// ====== 接收当前筛选进度
     void slotRecvSearchHostsInform(const int&, bool);
@@ -37,8 +36,9 @@ signals:
     void signalCurrentHostsSend(QVector<HostsState>);
 
 private:
-    int           m_linkHostsNum;
-    int           n_rstConectNum;
+    int           m_linkHostsNum = 0;
+    int           n_rstConectNum = 0;
+    uint          m_startIp;
     QVector<uint> n_rstInform;
     QVector<HostsState>   m_hostsStateLVector;
     Ui::ONBRetrieveAvailableNodes *ui;

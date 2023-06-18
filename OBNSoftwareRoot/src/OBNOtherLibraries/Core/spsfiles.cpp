@@ -497,7 +497,7 @@ int gobs_sps_files_SR_read(QStringList spsFileNames,AreaDataInfo *areaDataInfo,Q
     QString     fileName          = spsFileNames[0];
     qDebug() << "fileName = " << fileName;
     StationInfo *recv_stationInfo = new StationInfo;
-    int ok = gobs_sps_file_SR_read(fileName,recv_stationInfo);
+    int ok = gobs_sps_file_SR_read(fileName, recv_stationInfo);
     if(ok != 0)
     {
         delete recv_stationInfo;
@@ -531,8 +531,6 @@ int gobs_sps_files_SR_read(QStringList spsFileNames,AreaDataInfo *areaDataInfo,Q
 
 int gobs_sps_files_read(QStringList spsFileNames,AreaDataInfo *areaDataInfo,QString *errorStr)
 {
-//    FILE *fpOut = fopen("D:\\GOBS\\gobs_data\\test.out.sps", "wb");
-
     if(spsFileNames.size()<3)
     {
         return -1;
@@ -550,9 +548,6 @@ int gobs_sps_files_read(QStringList spsFileNames,AreaDataInfo *areaDataInfo,QStr
         return ok;
     }
 
-//    fprintf(fpOut, "读取sps中的源点信息完成。\n");
-//    fflush(fpOut);
-
     //S file read---------------------------------------
     fileName = spsFileNames.at(1);
     StationInfo *shot_stationInfo = new StationInfo;
@@ -565,10 +560,6 @@ int gobs_sps_files_read(QStringList spsFileNames,AreaDataInfo *areaDataInfo,QStr
             *errorStr = "Read R File Failed.";
         return ok;
     }
-
-//    fprintf(fpOut, "读取sps中的检波点信息完成。\n");
-//    fflush(fpOut);
-
     //X file read，可选---------------------------------------
     fileName = spsFileNames.at(2);
     QFile file(fileName);

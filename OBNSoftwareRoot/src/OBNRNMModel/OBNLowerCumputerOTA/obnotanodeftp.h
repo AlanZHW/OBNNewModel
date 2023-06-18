@@ -47,7 +47,7 @@ private:
     QString m_curentFtpServerIp; ///< 当前节点IP
     QFtp*   m_ftp;
     QFile*  m_file;
-    QString m_currentConfigfName;
+    QString m_currentConfigfName, m_currentConfigPath;
     int     m_curentGet, m_curentPut, m_curentConnect, m_curentLogIn, m_curentCD, m_curentList;
 };
 

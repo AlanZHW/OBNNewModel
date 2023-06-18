@@ -4,7 +4,7 @@
 FileDetailDlg::FileDetailDlg(QWidget *parent)
     :QDialog(parent)
 {
-    this->setWindowTitle("Segy Header Detail Dialog");
+    this->setWindowTitle(tr("SEGY道头对话框"));
     initDlg();
     this->resize(570,724);
 }
@@ -16,13 +16,13 @@ void FileDetailDlg::initDlg()
 
     //text header
     m_txtHeaderBrser = new QTextBrowser(this);
-    tabWg->insertTab(0,m_txtHeaderBrser,"Text Header");
+    tabWg->insertTab(0, m_txtHeaderBrser,tr("字段名"));
 
     //binary header
     m_binHeaderTab = new QTableWidget(this);
     m_binHeaderTab->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_binHeaderTab->setColumnCount(3);
-    m_binHeaderTab->setHorizontalHeaderLabels(QStringList()<<"Field"<<"Value"<<"Description");
+    m_binHeaderTab->setHorizontalHeaderLabels(QStringList()<<tr("字段名") << tr("数据") << tr("说明"));
     m_binHeaderTab->setAlternatingRowColors(true);
     QStringList binaryHeaderInfos;
     getBinaryHeaderInfos(binaryHeaderInfos);
@@ -33,11 +33,11 @@ void FileDetailDlg::initDlg()
         m_binHeaderTab->setItem(i,2,new QTableWidgetItem(binaryHeaderInfos[i*2+1]));
     }
     m_binHeaderTab->horizontalHeader()->setStretchLastSection(true);
-    tabWg->insertTab(1,m_binHeaderTab,"Text Header");
+    tabWg->insertTab(1,m_binHeaderTab, tr("字段名"));
 
     mainLayout->addWidget(tabWg);
     mainLayout->addWidget(new GLine(this));
-    QPushButton *okBtn = new QPushButton(tr("&Ok"));
+    QPushButton *okBtn = new QPushButton(tr("&确定"));
     okBtn->setMaximumWidth(44);
     mainLayout->addWidget(okBtn,0,Qt::AlignHCenter);
     this->setLayout(mainLayout);
@@ -46,7 +46,7 @@ void FileDetailDlg::initDlg()
 }
 
 
-void FileDetailDlg::setSegyFileInfo(char *textHeader,BinaryHead *header,SegyInfo *segyInfo)
+void FileDetailDlg::setSegyFileInfo(char *textHeader,BinaryHead *header, SegyInfo*)
 {
     //text header------
     m_txtHeaderBrser->setText(QString(textHeader));

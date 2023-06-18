@@ -10,16 +10,16 @@ ExportSegyDlg::ExportSegyDlg(QWidget *parent)
 
     //设置validator
     ui->traceLenEdit->setValidator(new QIntValidator(100,100000,this));
-    m_shotLineDlg = new ShotLineDlg(this);
 
-    //
+    m_shotLineDlg = new ShotLineDlg(this);
     m_areaDataInfo = 0;
     ui->textHeaderFrame->setFrameShape(QFrame::NoFrame);
 }
 
 ExportSegyDlg::~ExportSegyDlg()
 {
-    if(m_areaDataInfo){
+    if(m_areaDataInfo)
+    {
         m_areaDataInfo->clearData();
         delete m_areaDataInfo;
         m_areaDataInfo = 0;
@@ -39,7 +39,11 @@ void ExportSegyDlg::initByProject()
     //初始化工区列表
     QString projFile = m_projInfo.ProjectPath+Dir_Separator+m_projInfo.ProjectName+Project_File_Suffix;
     QStringList areaList = Area::areasFromProject(projFile);
-    ui->areasCbx->addItems(areaList);
+    qDebug() << __FILE__ << "\t" << __LINE__ << "\t areaList = " << areaList;
+    if(0 != areaList.count())
+    {
+        ui->areasCbx->addItems(areaList);
+    }
 }
 
 void ExportSegyDlg::updateScopeInfo()
@@ -48,10 +52,12 @@ void ExportSegyDlg::updateScopeInfo()
     {
         return;
     }
+
     /// ====== 选中输出炮道集
     if(ui->shotRbtn->isChecked())
     {
         StationInfo *shotStationInfo = m_areaDataInfo->shotStationInfo;
+
         //line
         ui->fromLineSpx->setRange(1,shotStationInfo->lineNum);
         ui->toLineSpx->setRange(1,shotStationInfo->lineNum);
@@ -62,13 +68,14 @@ void ExportSegyDlg::updateScopeInfo()
         int max_staNum = 0;
         for(int i =0;i<shotStationInfo->lineNum;i++)
         {
-            max_staNum = max_staNum<shotStationInfo->staLines[i].staNum ? shotStationInfo->staLines[i].staNum : max_staNum;
+            max_staNum = max_staNum < shotStationInfo->staLines[i].staNum ? shotStationInfo->staLines[i].staNum : max_staNum;
         }
         ui->fromStaSpx->setRange(1,max_staNum);
         ui->toStaSpx->setRange(1,max_staNum);
         ui->fromStaSpx->setValue(1);
         ui->toStaSpx->setValue(max_staNum);
     }
+
     /// ======选择输出检波点道集
     if(ui->recvRbtn->isChecked())
     {
@@ -77,17 +84,16 @@ void ExportSegyDlg::updateScopeInfo()
         /// ====== 获取线最小值和最大值,以及炮最小值和最大值
         float lineMin = __FLT_MAX__, lineMax = __FLT_MIN__;
         int   staMin  = INT_MAX, staMax  = INT_MIN;
+
         for(int iLine = 0; iLine < recvStationInfo->lineNum; iLine ++)
         {
-            for(int iStation = 0; iStation < recvStationInfo[iLine].staLines->staNum; iStation ++)
+            lineMin = qMin(lineMin, recvStationInfo->staLines[iLine].line);
+            lineMax = qMax(lineMax, recvStationInfo->staLines[iLine].line);
+
+            for(int iStation = 0; iStation < recvStationInfo->staLines[iLine].staNum; iStation ++)
             {
-                lineMin = qMin(lineMin, recvStationInfo[iLine].staLines->line);
-                lineMax = qMax(lineMax, recvStationInfo[iLine].staLines->line);
-                for(int iStations = 0; iStations < recvStationInfo[iLine].staLines[iStation].staNum; iStations ++)
-                {
-                    staMin = qMin(staMin, recvStationInfo[iLine].staLines[iStation].stations[iStations].sp);
-                    staMax = qMax(staMax, recvStationInfo[iLine].staLines[iStation].stations[iStations].sp);
-                }
+                staMin = qMin(staMin, recvStationInfo->staLines[iLine].stations[iStation].sp);
+                staMax = qMax(staMax, recvStationInfo->staLines[iLine].stations[iStation].sp);
             }
         }
         ui->fromLineSpx->setRange(lineMin, lineMax);
@@ -99,24 +105,6 @@ void ExportSegyDlg::updateScopeInfo()
         ui->fromStaSpx->setValue(staMin);
         ui->toStaSpx->setRange(staMin, staMax);
         ui->toStaSpx->setValue(staMax);
-#if 0
-        //line
-        ui->fromLineSpx->setRange(1,recvStationInfo->lineNum);
-        ui->toLineSpx->setRange(1,recvStationInfo->lineNum);
-        ui->fromLineSpx->setValue(1);
-        ui->toLineSpx->setValue(recvStationInfo->lineNum);
-
-        //station，计算站点最多的线
-        int max_staNum = 0;
-        for(int i =0;i<recvStationInfo->lineNum;i++)
-        {
-            max_staNum = max_staNum<recvStationInfo->staLines[i].staNum ? recvStationInfo->staLines[i].staNum : max_staNum;
-        }
-        ui->fromStaSpx->setRange(1,max_staNum);
-        ui->toStaSpx->setRange(1,max_staNum);
-        ui->fromStaSpx->setValue(1);
-        ui->toStaSpx->setValue(max_staNum);
-#endif
     }
 }
 
@@ -162,7 +150,7 @@ void ExportSegyDlg::on_areasCbx_currentIndexChanged(const QString &arg1)
     }
     QString errString;
     m_areaDataInfo =  new AreaDataInfo;
-    int ok = gobs_sps_files_SR_read(spsfiles,m_areaDataInfo,&errString);
+    int ok = gobs_sps_files_SR_read(spsfiles,m_areaDataInfo, &errString);
     if(ok!=0)
     {
         QMessageBox::critical(this, tr("错误"), QString("读取Area-SPS文件:%1").arg(errString));
@@ -195,10 +183,10 @@ void ExportSegyDlg::on_shotRbtn_clicked(bool checked)
 {
     if(checked)
     {
-        ui->ScopeGbx->setTitle("Shot Scope:");
-        ui->lineLbl->setText("Shot Line :");
-        ui->stationLbl->setText("Shot Station:");
-        ui->dataPathLbl->setText("RecvSegy Data Path:");
+        ui->ScopeGbx->setTitle(tr("炮范围:"));
+        ui->lineLbl->setText(tr("炮线序号:"));
+        ui->stationLbl->setText(tr("站点号:"));
+        ui->dataPathLbl->setText(tr("接收数据路径:"));
 
         ui->textHeaderFrame->hide();
         ui->gatherInfoGbx->hide();
@@ -243,7 +231,7 @@ void ExportSegyDlg::on_toStaSpx_valueChanged(int arg1)
 
 void ExportSegyDlg::on_dataPathBrwser_clicked()
 {
-    QString dataPath = QFileDialog::getExistingDirectory(this,"Select Origin Data Path",QDir::currentPath());
+    QString dataPath = QFileDialog::getExistingDirectory(this, tr("选择原始数据路径."),QDir::currentPath());
     if(dataPath.isEmpty())
     {
         return;
@@ -253,7 +241,7 @@ void ExportSegyDlg::on_dataPathBrwser_clicked()
 
 void ExportSegyDlg::on_outputPathBrwser_clicked()
 {
-    QString dataPath = QFileDialog::getExistingDirectory(this,"Select Ouput Path", QDir::currentPath());
+    QString dataPath = QFileDialog::getExistingDirectory(this,tr("选择输出数据路径"), QDir::currentPath());
     if(dataPath.isEmpty())
     {
         return;

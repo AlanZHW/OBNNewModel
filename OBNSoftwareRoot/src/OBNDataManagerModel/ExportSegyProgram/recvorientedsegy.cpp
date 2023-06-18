@@ -12,7 +12,7 @@ QString dataFile2TimeStr_HW(QString fnamein, double TC);
 
 #define First_Data_File_No   "0001"
 #define Data_File_Size        251658240     //240*1024*1024 B
-#define Data_File_Sample_Size 20*1024*1024     //10*1024*1024
+#define Data_File_Sample_Size 20*1024*1024  //10*1024*1024
 //文件时间跨度大小,ms,以1000 为基准
 #define Data_File_Msec_Size   20*1024*1024
 
@@ -499,58 +499,12 @@ bool RecvOrientedSegy::getDevicesInfo()
 
 bool RecvOrientedSegy::resvShotInform()
 {
-    /// ====== 读取炮时所在年份-根据数据文件的日志文件日期判断
-
-//    for(int i = 0; i < m_depolyedDevices.size(); i ++)
-//    {
-//        if(!m_depolyedDevices[i]->dataFile.isEmpty())
-//        {
-//            /// ======
-//            QString dataRootPath = m_Parameter.dataPath + Dir_Separator + m_depolyedDevices[i]->dataFile;
-//            /// ======
-//            QDir dirRoot(dataRootPath);
-//            /// ======
-//            QStringList subDirs = dirRoot.entryList(QDir::Dirs|QDir::NoDotAndDotDot);
-//            /// ======
-//            QString dataPath = m_Parameter.dataPath + Dir_Separator + m_depolyedDevices[i]->dataFile + Dir_Separator + subDirs[0];
-
-//            /// ======
-//            QStringList nameFilters;
-//            nameFilters << LogFileFilter;
-//            /// ======
-//            QDir dirData(dataPath);
-
-//            QStringList logFiles = dirData.entryList(nameFilters, QDir::NoDotAndDotDot|QDir::Files,QDir::Name);
-
-//            if(1 > logFiles.size())
-//            {
-//                continue;
-//            }
-//            QString logFileName = dataPath + Dir_Separator + logFiles.last();
-//            QFile fileLog(logFileName);
-//            if(fileLog.open(QIODevice::ReadOnly|QIODevice::Text))
-//            {
-//                QString nReadLine = fileLog.readLine().trimmed();
-//                shot_year = nReadLine.mid(1,4).toInt();
-//                fileLog.close();
-//            }
-//            break;
-//        }
-//    }
-//    if(shot_year<0)
-//    {
-//        m_errString = "Can not confirm the year of shot time.";
-//        return false;
-//    }
-
     //读取炮线坐标文件
     m_shotLineTimes = new ShotLineTimes;
     StationInfo *shotStationInfo   = m_areaDataInfo->shotStationInfo;
 
-    //int shot_year = shotStationInfo->staLines[0].stations[0].year.toInt();
-
     m_shotLineTimes->lineNum       = shotStationInfo->lineNum;
-    //每条线一个文件
+    /// ====== 每条线一个文件
     m_shotLineTimes->shotLineTimes = new ShotLineTime[shotStationInfo->lineNum];
 
     //读取每个文件，解析出炮时，坐标值从sps 读取，并且顺序对应
@@ -577,33 +531,6 @@ bool RecvOrientedSegy::resvShotInform()
             QTime time = QTime::fromString(nTimeInform,"hhmmss.zzz");
             m_shotLineTimes->shotLineTimes[line].shotTimes[iList] = QDateTime::fromString(nTimeInform, "yyyy-MM-dd hhmmss.zzz");
         }
-
-        //        //根据实际存储的列修改
-        //        QFile shotFile(shotLineFile);
-        //        if(!shotFile.open(QIODevice::ReadOnly))
-        //        {
-        //            m_errString = QString("Open shotLine file %1 failed.").arg(shotLineFile);
-        //            return false;
-        //        }
-        //        QTextStream in(&shotFile);
-
-        //        QString   dateTimeStr;
-        //        QDate     date0(shot_year,1,1);
-        //        QDate     date;
-        //        QTime     time;
-        //        int shot = 0;
-        //        while(!in.atEnd())
-        //        {
-        //            dateTimeStr = in.readLine().split(QRegExp("\\s+"))[4];
-        //            date        = date0.addDays(dateTimeStr.left(3).toInt()-1);
-        //            QString nTimeInform = dateTimeStr.mid(3);
-        //            nTimeInform         = QString("%1").arg(nTimeInform.toDouble(), 0, 'f', 3);
-        //            time                = QTime::fromString(nTimeInform,"hhmmss.zzz");
-        //            qDebug() << __FILE__ << "\t" << __LINE__ << "\t time = " << time;
-        //            m_shotLineTimes->shotLineTimes[line].shotTimes[shot] = QDateTime(date,time);
-        //            shot ++;
-        //        }
-        //        shotFile.close();
         line ++;
     }
     return true;

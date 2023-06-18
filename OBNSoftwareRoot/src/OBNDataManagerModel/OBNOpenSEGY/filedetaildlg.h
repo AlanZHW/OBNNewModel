@@ -19,7 +19,7 @@ class  FileDetailDlg : public QDialog
     Q_OBJECT
 public:
     FileDetailDlg(QWidget *parent = 0);
-    void setSegyFileInfo(char *textHeader,BinaryHead *headers,SegyInfo *segyInfo);
+    void setSegyFileInfo(char *textHeader, BinaryHead *headers, SegyInfo *);
 private:
     void initDlg();
     void getBinaryHeaderInfos(QStringList &fieldAndDesc);

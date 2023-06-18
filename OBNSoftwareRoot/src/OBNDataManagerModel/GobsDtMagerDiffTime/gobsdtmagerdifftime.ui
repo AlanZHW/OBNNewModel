@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>718</width>
-    <height>450</height>
+    <height>596</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="labelOriginPath">
        <property name="text">
-        <string>Origin Data Path</string>
+        <string>输入数据目录</string>
        </property>
       </widget>
      </item>
@@ -38,13 +38,13 @@
    <item row="1" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Parameter  </string>
+      <string>参数设置</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Config file</string>
+         <string>Config文件</string>
         </property>
        </widget>
       </item>
@@ -54,14 +54,14 @@
       <item row="0" column="5">
        <widget class="QPushButton" name="buttonConfig">
         <property name="text">
-         <string>Browse</string>
+         <string>浏览</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="labelN1">
         <property name="text">
-         <string>OneSampleCount</string>
+         <string>采样点个数</string>
         </property>
        </widget>
       </item>
@@ -81,7 +81,7 @@
       <item row="1" column="4">
        <widget class="QLabel" name="labelB">
         <property name="text">
-         <string>Bandwidth(Hz)</string>
+         <string>带宽(Hz)</string>
         </property>
        </widget>
       </item>
@@ -91,7 +91,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="labelF0">
         <property name="text">
-         <string>CenterFrequency(Hz)</string>
+         <string>中心频率(Hz)</string>
         </property>
        </widget>
       </item>
@@ -101,7 +101,7 @@
       <item row="2" column="2">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Distance(m)</string>
+         <string>间距(m)</string>
         </property>
        </widget>
       </item>
@@ -111,7 +111,7 @@
       <item row="2" column="4">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Area</string>
+         <string>工区选择</string>
         </property>
        </widget>
       </item>
@@ -121,7 +121,7 @@
       <item row="3" column="5">
        <widget class="QPushButton" name="PushImplement">
         <property name="text">
-         <string>Implement</string>
+         <string>执行</string>
         </property>
        </widget>
       </item>

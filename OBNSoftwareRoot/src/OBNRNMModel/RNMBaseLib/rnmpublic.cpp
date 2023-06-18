@@ -21,9 +21,9 @@ const QColor state_color[6] = {
 //起始地址
 static const uint startIp = QHostAddress("192.168.137.0").toIPv4Address();
 
-bool isNodeIP(const uint &ipV4)
+bool isNodeIP(const uint &ipV4, const uint & _startIp)
 {
-    uint val  = ipV4 - startIp;
+    uint val  = ipV4 - _startIp;
     uint temp = val%256;
     return temp;    ///< 发送所有解析的节点ip地址
 
@@ -31,9 +31,9 @@ bool isNodeIP(const uint &ipV4)
     // return (100 <= temp && temp<200);
 }
 
-uint ip2DeviceNo(const uint &ipV4)
+uint ip2DeviceNo(const uint &ipV4, const uint& _startIp)
 {
-    uint temp = ipV4 - startIp;
+    uint temp = ipV4 - _startIp;
 //    return (temp/256)*2 + ((temp%256)-2);
     return (temp/256)*2+(temp%256);
 }

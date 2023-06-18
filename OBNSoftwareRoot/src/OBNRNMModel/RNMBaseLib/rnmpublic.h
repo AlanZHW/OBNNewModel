@@ -111,8 +111,8 @@ const QColor Node_Downloaded_Color      = QColor(Qt::blue);
 extern "C"{
 #endif
 
-RNMBASELIBSHARED_EXPORT  bool isNodeIP(const uint &ipV4);
-RNMBASELIBSHARED_EXPORT  uint ip2DeviceNo(const uint &ipV4);
+RNMBASELIBSHARED_EXPORT  bool isNodeIP(const uint &ipV4, const uint &);
+RNMBASELIBSHARED_EXPORT  uint ip2DeviceNo(const uint &ipV4, const uint &);
 #ifdef __cplusplus
 }
 #endif

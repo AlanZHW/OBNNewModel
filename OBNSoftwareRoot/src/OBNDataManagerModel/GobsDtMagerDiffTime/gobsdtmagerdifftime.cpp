@@ -191,9 +191,6 @@ void GobsDtMagerDiffTime::on_PushImplement_clicked()
         }
         QStringList acuStrList = fileList[idxAcu0].split(QRegExp("\\s+"));
 		QStringList acuFileList = fileList[idxAcu0+1].split(QRegExp("\\s+"));
-
-
-
         AcufileInfo AcuFInfo;
         AcuFInfo.NodeName         = subDirs.at(idir);
 		AcuFInfo.AcufileName = DirfromDataList + "//" + acuFileList.at(3);                  //====保存ACU文件名
@@ -224,20 +221,20 @@ void GobsDtMagerDiffTime::on_PushImplement_clicked()
 //====当所有的ACU文件均处理完成时,开始执行画图程序
 void GobsDtMagerDiffTime::slotReadACUSuccess(QStringList pOutfNameList)
 {
-//   FILE *fp = fopen("D:\\GOBS\\gobs_data\\dddd.data","wb");
-//   fprintf(fp, "%d\n", pOutfNameList.count());
-//   fflush(fp);
     if(0 == pOutfNameList.count())
+    {
         return;
+    }
 
     int RowCount = 0;
     int RowContSum=0;
     RowCount    = pOutfNameList.count()/2;
     RowContSum  = pOutfNameList.count()%2;
     if(0 != RowContSum)
+    {
         RowCount += 1;
-//    fprintf(fp, "RowCount = %d \t RowContSum = %d\n", RowCount, RowContSum);
-//    fclose(fp);
+    }
+
     //====显示图像
     ui->tableWidget->setRowCount(RowCount);
     ui->tableWidget->setColumnCount(4);
@@ -298,14 +295,6 @@ void GobsDtMagerDiffTime::slotReadACUSuccess(QStringList pOutfNameList)
     pOutfNameList.clear();
     QMessageBox::information(this, "CUE", "Success.");
 }
-
-
-#if 0
-//====单击界面表格事件
-void GobsDtMagerDiffTime::slot_tablewidget_cellActivated(int row, int cloumn)
-{
-}
-#endif
 
 
 void GobsDtMagerDiffTime::on_buttonConfig_clicked()

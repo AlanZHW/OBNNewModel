@@ -586,8 +586,18 @@ void SearchIpDialog::slotSearchBtnClicked()
             fromIP.toStdString().c_str(), toIP.toStdString().c_str());
     fflush(fptx);
 #endif
+
+    QStringList nfromIPList = fromIP.split(".");
+    QString firstIP;
+    for(int iList = 0; iList < nfromIPList.count()-1; iList ++)
+    {
+        firstIP = firstIP + nfromIPList[iList] + ".";
+    }
+    firstIP = firstIP + "0";
+
     QHostAddress addr1(fromIP);
     QHostAddress addr2(toIP);
+    QHostAddress addrFirst(firstIP);
 
     //满足 起始< 结束-----
     if(addr1.toIPv4Address()>addr2.toIPv4Address())
@@ -607,15 +617,16 @@ void SearchIpDialog::slotSearchBtnClicked()
     m_hostsTab->clear();
     m_hostsTab->setHorizontalHeaderLabels(QStringList() << "IP" << tr("设备编号") << tr("连接状态"));   ///< State(Connected)
 
-    m_startIP =  addr1.toIPv4Address();
-    m_lastIP  =  addr2.toIPv4Address();
+    m_startIP = addr1.toIPv4Address();
+    m_lastIP  = addr2.toIPv4Address();
+    m_firstIP = addrFirst.toIPv4Address();
 #ifdef DEBUG
     fprintf(fptx, "m_startIP:%d\n", m_startIP);
     fprintf(fptx, "m_lastIP: %d\n", m_lastIP);
     fflush(fptx);
 #endif
 
-    m_totalIp = findNodesFromScope(m_startIP,m_lastIP);
+    m_totalIp = findNodesFromScope(m_startIP, m_lastIP);
 
     int addrNum = m_totalIp.size();
 #ifdef DEBUG
@@ -627,14 +638,7 @@ void SearchIpDialog::slotSearchBtnClicked()
     for(int i=0;i<addrNum;i++)
     {
         m_hostsTab->setItem(i,0,new QTableWidgetItem(QHostAddress(m_totalIp[i]).toString()));
-        m_hostsTab->setItem(i,1
-                            ,new QTableWidgetItem(QString("G%1").arg(ip2DeviceNo(m_totalIp[i]),3,10,QChar('0'))));
-
-#ifdef DEBUG
-        fprintf(fptx, "m_totalIp[i]:%s\n", QHostAddress(m_totalIp[i]).toString().toStdString().c_str());
-        fprintf(fptx, "ip2DeviceNo:%d\n", ip2DeviceNo(m_totalIp[i]));
-        fflush(fptx);
-#endif
+        m_hostsTab->setItem(i,1,new QTableWidgetItem(QString("G%1").arg(ip2DeviceNo(m_totalIp[i], m_firstIP),3,10,QChar('0'))));
     }
 
     m_totalNodesLbl->setText(QString::number(addrNum));
@@ -747,7 +751,7 @@ QVector<uint> SearchIpDialog::findNodesFromScope(const quint32 &start,const quin
     int num = 0;
     for(uint i=start;i<=last;i++)
     {
-        if(isNodeIP(i))
+        if(isNodeIP(i, m_firstIP))
         {
             rst[num] = i;
             num++;

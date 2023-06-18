@@ -312,9 +312,9 @@ void RNFtpManager::initDlg()
 
     ui->spinBox->setValue(QThread::idealThreadCount()-1);
 
-    ui->splitter->setStretchFactor(0,3);
-    ui->splitter->setStretchFactor(1,3);
-    ui->splitter->setSizes(QList<int>()<<height()*3/4<<height()*1/4);
+//    ui->splitter->setStretchFactor(0,3);
+//    ui->splitter->setStretchFactor(1,3);
+//    ui->splitter->setSizes(QList<int>()<<height()*3/4<<height()*1/4);
     ui->textBrowser->resize(ui->textBrowser->width(),80);
 }
 
